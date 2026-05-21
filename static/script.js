@@ -70,17 +70,29 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 // --- BƯỚC 1: XIN QUYỀN VÀ MỞ CAMERA ---
 document.getElementById('btnStart').addEventListener('click', async () => {
     try {
-        let stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } },
-            audio: false
-        });
+        let stream;
+        try {
+            // PHƯƠNG ÁN A: Thử mở Camera trước chuẩn HD (Điện thoại)
+            stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } },
+                audio: false
+            });
+        } catch (errA) {
+            // PHƯƠNG ÁN B: Nếu PC/Laptop không hiểu "facingMode", mở camera mặc định
+            stream = await navigator.mediaDevices.getUserMedia({
+                video: true, audio: false
+            });
+        }
+
         video.srcObject = stream;
-        video.onloadedmetadata = () => video.play();
+        video.onloadedmetadata = () => {
+            video.play().catch(e => console.log("Bỏ qua lỗi play:", e));
+        };
         
         buildLayoutMenu();
         showScreen('layout'); // Chuyển sang màn hình chọn Layout
     } catch (err) {
-        alert("Lỗi Camera: " + err.message);
+        alert("Lỗi Camera: Không thể truy cập. " + err.message);
     }
 });
 
