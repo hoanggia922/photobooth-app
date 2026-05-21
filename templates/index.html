@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Photobooth 4-Shot</title>
+    <!-- Nhúng CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <h1>📸 Photobooth App</h1>
+        
+        <!-- Khung chứa Video -->
+        <div class="media-container" id="videoContainer">
+            <video id="videoElement" autoplay playsinline muted></video>
+            <div id="countdown" style="display: none;">3</div>
+            <div id="flash"></div>
+        </div>
+
+        <!-- Khung chứa Canvas (ẩn mặc định) -->
+        <div class="media-container" id="canvasContainer" style="display: none;">
+            <canvas id="canvasElement"></canvas>
+        </div>
+
+        <!-- Các nút điều khiển -->
+        <div class="controls" id="captureControls">
+            <button id="captureBtn">Chụp 4 tấm</button>
+        </div>
+
+        <div class="controls" id="actionControls" style="display: none;">
+            <button id="retakeBtn" class="btn-secondary">Chụp Lại</button>
+            <button id="saveBtn" class="btn-primary">Lưu Ảnh</button>
+        </div>
+    </div>
+
+    <!-- Truyền đường dẫn ảnh frame.png từ Flask sang JavaScript -->
+    <script>
+        const FRAME_IMAGE_URL = "{{ url_for('static', filename='frame.png') }}";
+    </script>
+    
+    <!-- Nhúng JS -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
