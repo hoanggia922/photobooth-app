@@ -207,3 +207,10 @@ button:active {
     justify-content: center;
     font-size: 14px;
 }
+#videoElement {
+    transform: scaleX(-1);
+    -webkit-transform: scaleX(-1); /* Hỗ trợ thêm cho trình duyệt Safari (iPhone) */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

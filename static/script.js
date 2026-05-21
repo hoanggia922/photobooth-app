@@ -137,9 +137,16 @@ async function startCaptureSession() {
         const tempCanvas = document.createElement('canvas');
         tempCanvas.width = video.videoWidth;
         tempCanvas.height = video.videoHeight;
-        tempCanvas.getContext('2d').drawImage(video, 0, 0);
-        capturedPhotos.push(tempCanvas.toDataURL('image/jpeg', 0.8)); // Lưu dạng JPEG cho nhẹ RAM
+        const tCtx = tempCanvas.getContext('2d');
         
+        // Lật ngược (Mirror) khung vẽ trước khi dán hình từ camera vào
+        tCtx.translate(tempCanvas.width, 0);
+        tCtx.scale(-1, 1);
+        tCtx.drawImage(video, 0, 0);
+        
+        capturedPhotos.push(tempCanvas.toDataURL('image/jpeg', 0.8));
+        // ==================================================
+
         await delay(500); // Nghỉ 0.5s trước tấm tiếp theo
     }
 
