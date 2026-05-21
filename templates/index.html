@@ -3,43 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Photobooth 4-Shot</title>
-    <!-- Nhúng CSS -->
+    <title>Photobooth Pro</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="app-container">
-        <h1>📸 Photobooth App</h1>
         
-        <!-- Khung chứa Video -->
-        <div class="media-container" id="videoContainer">
-            <video id="videoElement" autoplay playsinline muted></video>
-            <div id="countdown" style="display: none;">3</div>
-            <div id="flash"></div>
+        <div id="screen-welcome" class="screen active">
+            <h1>📸 Photobooth</h1>
+            <p class="instruction">Quy trình sử dụng:<br>1. Chọn Layout ưng ý.<br>2. Tạo dáng chụp 6 kiểu ảnh.<br>3. Chọn ra những tấm đẹp nhất để in!</p>
+            <button id="btnStart" class="btn-primary">Bắt Đầu & Cấp Quyền Camera</button>
         </div>
 
-        <!-- Khung chứa Canvas (ẩn mặc định) -->
-        <div class="media-container" id="canvasContainer" style="display: none;">
-            <canvas id="canvasElement"></canvas>
+        <div id="screen-layout" class="screen hidden">
+            <h2>Chọn Layout Khung Ảnh</h2>
+            <div class="layout-grid" id="layoutContainer">
+                </div>
         </div>
 
-        <!-- Các nút điều khiển -->
-        <div class="controls" id="captureControls">
-            <button id="captureBtn">Chụp 4 tấm</button>
+        <div id="screen-capture" class="screen hidden">
+            <div class="media-container" id="videoContainer">
+                <video id="videoElement" autoplay playsinline muted></video>
+                <div id="countdown" class="hidden">3</div>
+                <div id="flash"></div>
+                <div id="captureProgress">0/6</div> 
+            </div>
         </div>
 
-        <div class="controls" id="actionControls" style="display: none;">
-            <button id="retakeBtn" class="btn-secondary">Chụp Lại</button>
-            <button id="saveBtn" class="btn-primary">Lưu Ảnh</button>
+        <div id="screen-selection" class="screen hidden">
+            <h2>Chọn <span id="requiredCount"></span> tấm ưng ý nhất</h2>
+            <div class="selection-grid" id="selectionContainer">
+                </div>
+            <button id="btnConfirmSelection" class="btn-primary" disabled>Ghép Ảnh</button>
         </div>
+
+        <div id="screen-final" class="screen hidden">
+            <div class="media-container">
+                <canvas id="canvasElement"></canvas>
+            </div>
+            <div class="controls">
+                <button id="btnRetake" class="btn-secondary">Chụp Lại</button>
+                <button id="btnSave" class="btn-primary">Lưu Ảnh</button>
+            </div>
+        </div>
+
     </div>
 
-    <!-- Truyền đường dẫn ảnh frame.png từ Flask sang JavaScript -->
-    <script>
-        const FRAME_IMAGE_URL = "{{ url_for('static', filename='frame.png') }}";
-    </script>
-    
-    <!-- Nhúng JS -->
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
