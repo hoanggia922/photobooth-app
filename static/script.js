@@ -40,9 +40,9 @@ const LAYOUTS = [
         requiredPhotos: 3,
         frameUrl: '/static/frame_3.png', // Hãy lưu khung dọc 3 ô tên là frame_3.png
         slots: [
-            { cx: 0.51, cy: 0.18, w: 0.83, h: 0.28, angle: 0 }, // Ô trên cùng
-            { cx: 0.51, cy: 0.48, w: 0.83, h: 0.28, angle: 0 }, // Ô ở giữa
-            { cx: 0.51, cy: 0.78, w: 0.83, h: 0.28, angle: 0 }  // Ô dưới cùng
+            { cx: 0.51, cy: 0.18, w: 0.83, h: 0.22, angle: 0 }, // Ô trên cùng
+            { cx: 0.51, cy: 0.48, w: 0.83, h: 0.22, angle: 0 }, // Ô ở giữa
+            { cx: 0.51, cy: 0.78, w: 0.83, h: 0.22, angle: 0 }  // Ô dưới cùng
         ]
     },
     {
