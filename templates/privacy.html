@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Privacy Policy - Photobooth</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <div class="background-glow"></div>
+        <nav class="navbar">
+            <a href="{{ url_for('home') }}">home</a>
+            <a href="{{ url_for('privacy') }}">privacy policy</a>
+            <a href="{{ url_for('about') }}" style="color: #d16b86; font-weight: bold;">about</a>
+        </nav>
+        <main class="main-content" style="text-align: center; max-width: 600px; padding: 20px;">
+            <h1 style="font-size: 3rem; color: #333; font-style: italic; margin-bottom: 20px;">Chính Sách Bảo Mật</h1>
+            <p style="color: #555; line-height: 1.6;">
+                Hệ thống chỉ lưu trữ ảnh tạm thời trên máy chủ nội bộ để bạn tải về, chúng tôi cam kết không chia sẻ dữ liệu hình ảnh cá nhân của bạn ra bên ngoài.
+            </p>
+        </main>
+        <footer>
+            <p>made by Aegis <span class="heart-icon">♡</span></p>
+        </footer>
+    </body>
+</html>

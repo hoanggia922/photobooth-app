@@ -2,52 +2,73 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Photobooth Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photobooth Professional</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="app-container">
+
+    <div class="background-glow"></div>
+    <div id="flash"></div>
+
+    <nav class="navbar">
+        <a href="{{ url_for('home') }}">home</a>
+        <a href="{{ url_for('privacy') }}">privacy policy</a>
+        <a href="{{ url_for('about') }}">about</a>
+    </nav>
+    <main class="main-content">
         
         <div id="screen-welcome" class="screen active">
-            <h1>📸 Photobooth</h1>
-            <p class="instruction">Quy trình sử dụng:<br>1. Chọn Layout ưng ý.<br>2. Tạo dáng chụp 6 kiểu ảnh.<br>3. Chọn ra những tấm đẹp nhất để in!</p>
-            <button id="btnStart" class="btn-primary">Bắt Đầu & Cấp Quyền Camera</button>
+            <div class="title-group">
+                <span>NhaTrang</span>
+                <h1>photobooth</h1>
+                <span>2026</span>
+            </div>
+            <p class="slogan">Hãy chụp theo cá tính của bạn!</p>
+            <div class="actions">
+                <button class="btn-start" id="btnStart">
+                    <span>BẮT ĐẦU</span>
+                </button>
+            </div>
         </div>
-
+        
         <div id="screen-layout" class="screen">
-            <h2>Chọn Layout Khung Ảnh</h2>
-            <div class="layout-grid" id="layoutContainer">
-                </div>
+            <h2 class="screen-title">Chọn kiểu khung ảnh bạn thích</h2>
+            <div id="layoutContainer" class="layout-grid"></div>
         </div>
 
         <div id="screen-capture" class="screen">
-            <div class="media-container" id="videoContainer">
-                <video id="videoElement" autoplay playsinline muted></video>
+            <div class="camera-box">
+                <video id="videoElement" autoplay playsinline></video>
                 <div id="countdown" class="hidden">3</div>
-                <div id="flash"></div>
-                <div id="captureProgress">0/6</div> 
             </div>
+            <p class="capture-status">Đang chụp kiểu số: <span id="captureProgress">1/6</span></p>
         </div>
 
         <div id="screen-selection" class="screen">
-            <h2>Chọn <span id="requiredCount"></span> tấm ưng ý nhất</h2>
-            <div class="selection-grid" id="selectionContainer">
-                </div>
-            <button id="btnConfirmSelection" class="btn-primary" disabled>Ghép Ảnh</button>
+            <h2 class="screen-title">Chọn đủ <span id="requiredCount">0</span> bức ảnh bạn ưng ý nhất</h2>
+            <div id="selectionContainer" class="selection-grid"></div>
+            <div class="actions">
+                <button class="btn-start" id="btnConfirmSelection" disabled>HOÀN THÀNH ✨</button>
+            </div>
         </div>
 
         <div id="screen-final" class="screen">
-            <div class="media-container">
+            <h2 class="screen-title">Tác phẩm của bạn!</h2>
+            <div class="canvas-container">
                 <canvas id="canvasElement"></canvas>
             </div>
-            <div class="controls">
-                <button id="btnRetake" class="btn-secondary">Chụp Lại</button>
-                <button id="btnSave" class="btn-primary">Lưu Ảnh</button>
+            <div class="actions" style="margin-top: 20px;">
+                <button class="btn-start" id="btnSave">TẢI ẢNH VỀ ⬇️</button>
+                <button class="btn-start" id="btnRetake" style="background: #eee; color: #333; border-color: #ccc;">CHỤP LẠI 🔄</button>
             </div>
         </div>
 
-    </div>
+    </main>
+
+    <footer>
+        <p>made by <span style="color: #d16b86;">Aegis</span> <span class="heart-icon">♡</span></p>
+    </footer>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
