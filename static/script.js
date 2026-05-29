@@ -53,6 +53,7 @@ document.getElementById('btnStart').addEventListener('click', () => {
 });
 
 // Hàm hiển thị danh sách Layout (Không cần lọc ngang/dọc nữa)
+// Hàm hiển thị danh sách Layout (Đã thêm ảnh preview và sửa lỗi click)
 function renderLayoutOptions() {
     const container = document.getElementById('layoutContainer');
     container.innerHTML = '';
@@ -60,12 +61,29 @@ function renderLayoutOptions() {
     LAYOUTS.forEach(layout => {
         const btn = document.createElement('button');
         btn.className = 'layout-btn';
-        btn.innerText = layout.name;
-        btn.addEventListener('click', () => {
+        
+        // 1. Tạo thẻ ảnh để hiển thị hình dáng khung
+        const img = document.createElement('img');
+        img.src = layout.frameUrl; // Lấy ảnh từ /static/frame1.png
+        img.className = 'layout-preview';
+        img.alt = layout.name;
+        
+        // 2. Tạo thẻ tên khung
+        const text = document.createElement('span');
+        text.innerText = layout.name;
+        text.className = 'layout-name';
+        
+        // Gắn ảnh và chữ vào nút bấm
+        btn.appendChild(img);
+        btn.appendChild(text);
+        
+        // 3. Xử lý sự kiện click (SỬA LỖI: Thêm tham số 'e')
+        btn.addEventListener('click', (e) => {
             e.currentTarget.disabled = true;
             currentLayout = layout;
             startCaptureSession(); // Vào thẳng phiên chụp
         });
+        
         container.appendChild(btn);
     });
 }

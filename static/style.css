@@ -171,15 +171,66 @@ body {
 #flash.flash-active { animation: flashAnim 0.1s ease-out; }
 @keyframes flashAnim { 0% { opacity: 1; } 100% { opacity: 0; } }
 
-/* --- LƯỚI CHỌN LAYOUT --- */
-.layout-grid { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 400px; }
-.layout-btn {
-    background: white; border: 1px solid #eee; padding: 15px 20px;
-    border-radius: 12px; font-size: 1rem; cursor: pointer; text-align: left;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: all 0.2s;
+/* --- LƯỚI CHỌN LAYOUT (NÂNG CẤP LƯỚT CUỘN) --- */
+.layout-grid { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 20px; 
+    width: 100%; 
+    max-width: 400px; 
+    max-height: 55vh; /* Giới hạn chiều cao để kích hoạt thanh cuộn */
+    overflow-y: auto; /* Bật tính năng lướt lên xuống */
+    padding: 10px; /* Tránh việc box-shadow bị cắt */
 }
-.layout-btn:hover { border-color: #d16b86; color: #d16b86; background: #fffbfb; }
 
+/* Trang trí thanh cuộn (Scrollbar) cho đẹp mắt */
+.layout-grid::-webkit-scrollbar {
+    width: 6px;
+}
+.layout-grid::-webkit-scrollbar-thumb {
+    background-color: #d16b86; /* Màu hồng pastel */
+    border-radius: 10px;
+}
+.layout-grid::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Định dạng lại nút bấm để chứa hình ảnh */
+.layout-btn {
+    background: white; 
+    border: 2px solid #eee; 
+    padding: 15px;
+    border-radius: 16px; 
+    cursor: pointer; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04); 
+    transition: all 0.3s ease;
+}
+
+.layout-btn:hover { 
+    border-color: #d16b86; 
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(209, 107, 134, 0.2);
+}
+
+/* Định dạng cho bức ảnh Frame thu nhỏ */
+.layout-preview {
+    width: 100%;
+    max-height: 250px;
+    object-fit: contain;
+    border-radius: 8px;
+    background-color: #222; /* Lót nền tối để nổi bật khung viền trắng của Polaroid */
+}
+
+/* Tên khung hiển thị bên dưới ảnh */
+.layout-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #444;
+}
 /* --- LƯỚI CHỌN ẢNH (SELECTION GRID) --- */
 .selection-grid {
     display: grid;
