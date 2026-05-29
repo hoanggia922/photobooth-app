@@ -52,6 +52,7 @@ document.getElementById('btnStart').addEventListener('click', () => {
         });
 });
 
+// --- BƯỚC 2: CHỌN LAYOUT ---
 // Hàm hiển thị danh sách Layout (Không cần lọc ngang/dọc nữa)
 // Hàm hiển thị danh sách Layout (Đã thêm ảnh preview và sửa lỗi click)
 function renderLayoutOptions() {

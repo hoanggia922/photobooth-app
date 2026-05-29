@@ -8,10 +8,6 @@ app = Flask(__name__)
 # Đảm bảo thư mục lưu ảnh tồn tại
 os.makedirs('static/photos', exist_ok=True)
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
 @app.route('/save-photo', methods=['POST'])
 def save_photo():
     data = request.json
