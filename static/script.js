@@ -16,6 +16,8 @@ const flashEl = document.getElementById('flash');
 const progressEl = document.getElementById('captureProgress');
 const selectionContainer = document.getElementById('selectionContainer');
 const btnConfirmSelection = document.getElementById('btnConfirmSelection');
+const btnRetake = document.getElementById('btnRetake');
+const btnStart = document.getElementById('btnStart');
 
 // --- APP STATE ---
 let currentLayout = null; 
@@ -24,50 +26,53 @@ let userSelectedIndices = [];
 
 const LAYOUTS = [
     {
-        id: 'frame-bear',
-        name: 'Khung Bé Gấu',
+        id: 'frame-strip-bear',
+        name: 'Khung Bé Gấu 5x16',
         requiredPhotos: 4,
-        frameUrl: '/static/congau.png', 
+        frameUrl: '/static/congau.png', // Hoạt động hoàn hảo với PNG
         slots: [
-            { cx: 0.5, cy: 0.16, w: 0.88, h: 0.18, angle: 0 },
-            { cx: 0.5, cy: 0.36, w: 0.88, h: 0.18, angle: 0 },
-            { cx: 0.5, cy: 0.56, w: 0.88, h: 0.18, angle: 0 },
-            { cx: 0.5, cy: 0.76, w: 0.88, h: 0.18, angle: 0 }
+            // Ô 1 (Trên cùng) - Đã được kéo lên đúng vị trí
+            { cx: 0.5, cy: 0.1122, w: 0.9171, h: 0.1852, angle: 0 },
+            // Ô 2
+            { cx: 0.5, cy: 0.3183, w: 0.9154, h: 0.1857, angle: 0 },
+            // Ô 3 
+            { cx: 0.5, cy: 0.5241, w: 0.9205, h: 0.1857, angle: 0 },
+            // Ô 4 (Dưới cùng)
+            { cx: 0.5, cy: 0.7304, w: 0.9154, h: 0.1868, angle: 0 }
         ]
     },
     {
-        id: 'frame-boy',
-        name: 'Khung Bé Trai',
+        id: 'frame-strip-boy',
+        name: 'Khung Bé Trai 5x16',
         requiredPhotos: 4,
         frameUrl: '/static/final.png',
         slots: [
-            { cx: 0.5, cy: 0.16, w: 0.88, h: 0.18, angle: 0 },
-            { cx: 0.5, cy: 0.36, w: 0.88, h: 0.18, angle: 0 },
-            { cx: 0.5, cy: 0.56, w: 0.88, h: 0.18, angle: 0 },
-            { cx: 0.5, cy: 0.76, w: 0.88, h: 0.18, angle: 0 }
+            { cx: 0.5, cy: 0.1122, w: 0.9171, h: 0.1852, angle: 0 },
+            { cx: 0.5, cy: 0.3183, w: 0.9154, h: 0.1857, angle: 0 },
+            { cx: 0.5, cy: 0.5241, w: 0.9205, h: 0.1857, angle: 0 },
+            { cx: 0.5, cy: 0.7304, w: 0.9154, h: 0.1868, angle: 0 }
         ]
     },
     {
-        id: 'frame-knight',
-        name: 'Khung Hiệp Sĩ',
+        id: 'frame-strip-knight',
+        name: 'Khung Hiệp Sĩ 5x16',
         requiredPhotos: 4,
         frameUrl: '/static/hiepsi.png',
         slots: [
-            { cx: 0.5, cy: 0.16, w: 0.88, h: 0.18, angle: 0 },
-            { cx: 0.5, cy: 0.36, w: 0.88, h: 0.18, angle: 0 },
-            { cx: 0.5, cy: 0.56, w: 0.88, h: 0.18, angle: 0 },
-            { cx: 0.5, cy: 0.76, w: 0.88, h: 0.18, angle: 0 }
+            { cx: 0.5, cy: 0.1122, w: 0.9171, h: 0.1852, angle: 0 },
+            { cx: 0.5, cy: 0.3183, w: 0.9154, h: 0.1857, angle: 0 },
+            { cx: 0.5, cy: 0.5241, w: 0.9205, h: 0.1857, angle: 0 },
+            { cx: 0.5, cy: 0.7304, w: 0.9154, h: 0.1868, angle: 0 }
         ]
     }
 ];
 
 // --- BƯỚC 1: BẤM START -> MỞ CAMERA -> CHỌN LAYOUT ---
-document.getElementById('btnStart').addEventListener('click', () => {
-    // Xin quyền và bật webcam ngay lập tức
+function startCameraSessionGlobal() {
     navigator.mediaDevices.getUserMedia({ video: true })
         .then(stream => {
             video.srcObject = stream;
-            // Camera đã lên hình, đổ danh sách layout và chuyển màn hình
+            video.play().catch(err => console.warn('Lỗi autoplay video:', err));
             renderLayoutOptions();
             switchScreen('layout');
         })
@@ -75,7 +80,12 @@ document.getElementById('btnStart').addEventListener('click', () => {
             console.error("Lỗi camera: ", err);
             alert("Vui lòng cấp quyền camera trên trình duyệt để tiếp tục!");
         });
-});
+}
+
+btnStart.addEventListener('click', startCameraSessionGlobal);
+if (btnRetake) {
+    btnRetake.addEventListener('click', startCameraSessionGlobal);
+}
 
 // --- BƯỚC 2: CHỌN LAYOUT ---
 // Hàm hiển thị danh sách Layout (Không cần lọc ngang/dọc nữa)
@@ -92,12 +102,7 @@ function renderLayoutOptions() {
         const previewContainer = document.createElement('div');
         previewContainer.className = 'layout-preview-strip';
 
-        const frameImg = document.createElement('img');
-        frameImg.src = layout.frameUrl;
-        frameImg.alt = layout.name;
-        frameImg.className = 'frame-img-preview';
-        previewContainer.appendChild(frameImg);
-
+        // 1. Xếp các ô đen làm nền phía dưới trước
         layout.slots.forEach(slot => {
             const slotEl = document.createElement('div');
             slotEl.className = 'slot-overlay-preview';
@@ -105,9 +110,16 @@ function renderLayoutOptions() {
             slotEl.style.top = `${(slot.cy - slot.h / 2) * 100}%`;
             slotEl.style.width = `${slot.w * 100}%`;
             slotEl.style.height = `${slot.h * 100}%`;
-            slotEl.style.transform = `rotate(${slot.angle}deg)`;
+            slotEl.style.transform = `rotate(${slot.angle || 0}deg)`;
             previewContainer.appendChild(slotEl);
         });
+
+        // 2. Đặt ảnh khung PNG lên trên cùng
+        const frameImg = document.createElement('img');
+        frameImg.src = layout.frameUrl;
+        frameImg.alt = layout.name;
+        frameImg.className = 'frame-img-preview';
+        previewContainer.appendChild(frameImg);
 
         btn.appendChild(previewContainer);
 
@@ -215,7 +227,7 @@ function drawImageProp(ctx, img, x, y, w, h) {
     ctx.drawImage(img, sx, sy, sWidth, sHeight, x, y, w, h);
 }
 
-// --- BƯỚC 5: XỬ LÝ GHÉP FRAME VÀ HIỂN THỊ (GIỮ NGUYÊN ICON TRANG TRÍ) ---
+// --- BƯỚC 5: XỬ LÝ GHÉP FRAME VÀ HIỂN THỊ (DÀNH CHO KHUNG ĐƠN PNG) ---
 btnConfirmSelection.addEventListener('click', () => {
     switchScreen('final');
     
@@ -223,18 +235,20 @@ btnConfirmSelection.addEventListener('click', () => {
     frameImg.src = currentLayout.frameUrl; 
     
     frameImg.onload = () => {
+        const canvas = document.getElementById('canvasElement');
+        const ctx = canvas.getContext('2d');
         canvas.width = frameImg.width;
         canvas.height = frameImg.height;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Lớp nền trắng mặc định dưới cùng
+        // Lớp nền trắng
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // 1. VẼ TẤT CẢ ẢNH CỦA KHÁCH HÀNG TRƯỚC (Lớp ở dưới cùng)
         let loadedCount = 0;
-        const slotsToDraw = currentLayout.slots.slice(0, currentLayout.requiredPhotos);
-        slotsToDraw.forEach((config, i) => {
+        
+        // Vẽ đúng 4 ảnh mà khách chọn
+        currentLayout.slots.forEach((config, i) => {
             let selectedPhotoIndex = userSelectedIndices[i];
             let photoImg = new Image();
             photoImg.src = capturedPhotos[selectedPhotoIndex];
@@ -244,7 +258,7 @@ btnConfirmSelection.addEventListener('click', () => {
                 let slotCY = config.cy * canvas.height;
                 let slotW = config.w * canvas.width;
                 let slotH = config.h * canvas.height;
-                let radians = config.angle * Math.PI / 180;
+                let radians = (config.angle || 0) * Math.PI / 180;
 
                 ctx.save();
                 ctx.translate(slotCX, slotCY);
@@ -254,40 +268,39 @@ btnConfirmSelection.addEventListener('click', () => {
                 
                 loadedCount++;
                 
-                // 2. KHI VẼ XONG SỐ ẢNH YÊU CẦU, TIẾN HÀNH ĐỀU KHUNG ẢNH LÊN TRÊN
-                if (loadedCount === slotsToDraw.length) {
-                    // Tạo một Canvas phụ ngầm để xử lý ảnh màu
-                    const tempCanvas = document.createElement('canvas');
-                    tempCanvas.width = canvas.width;
-                    tempCanvas.height = canvas.height;
-                    const tempCtx = tempCanvas.getContext('2d');
-                    
-                    // Vẽ khung hình gốc vào canvas phụ
-                    tempCtx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-                    
-                    // Lấy mảng dữ liệu pixel (R, G, B, A) của khung hình
-                    const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-                    const data = imgData.data;
-                    
-                    // Vòng lặp kiểm tra từng điểm ảnh
-                    for (let j = 0; j < data.length; j += 4) {
-                        let r = data[j];     // Kênh màu Đỏ
-                        let g = data[j + 1]; // Kênh màu Xanh lá
-                        let b = data[j + 2]; // Kênh màu Xanh dương
-                        
-                        // Nếu là màu đen hoặc gần đen (Xử lý nhiễu do nén ảnh JPG)
-                        if (r < 35 && g < 35 && b < 35) {
-                            data[j + 3] = 0; // Đặt Alpha (độ đậm đặc) bằng 0 -> Biến thành TRONG SUỐT
-                        }
-                    }
-                    
-                    // Cập nhật lại dữ liệu pixel đã đục lỗ vào canvas phụ
-                    tempCtx.putImageData(imgData, 0, 0);
-                    
-                    // Vẽ dán đè bộ khung đã được làm trong suốt các ô đen lên TRÊN CÙNG ảnh khách hàng
-                    ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
+                // Khi vẽ xong 4 tấm ảnh, ụp cái khung PNG (nền trong suốt) lên trên cùng!
+                if (loadedCount === currentLayout.slots.length) {
+                    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
                 }
             };
         });
     };
 });
+
+// NÚT LƯU ẢNH: Vừa tải trực tiếp về máy vừa gửi bản sao lên server Flask (Đã sửa lỗi & Tối ưu Mobile)
+const btnSave = document.getElementById('btnSave');
+if (btnSave) {
+    btnSave.addEventListener('click', () => {
+        const dataURL = canvas.toDataURL('image/jpeg', 0.9);
+        
+        // 1. Download client-side về máy tính/điện thoại người dùng
+        const link = document.createElement('a');
+        link.download = `photobooth_${currentLayout ? currentLayout.id : 'photo'}_${new Date().getTime()}.jpg`;
+        link.href = dataURL;
+        
+        // Mẹo bắt buộc: Phải append vào body thì Safari/Chrome trên điện thoại mới chịu tải file xuống
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // 2. Đồng thời gửi ngầm về server Python Flask để lưu giữ lưu trữ dự phòng
+        fetch('/save-photo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: dataURL })
+        })
+        .then(response => response.json())
+        .then(data => console.log("Đã lưu dự phòng tại server:", data.message))
+        .catch(error => console.error('Lỗi lưu server:', error));
+    });
+}

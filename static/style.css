@@ -173,97 +173,90 @@ body {
 @keyframes flashAnim { 0% { opacity: 1; } 100% { opacity: 0; } }
 
 /* --- LƯỚI CHỌN LAYOUT (NÂNG CẤP LƯỚT CUỘN) --- */
+/* --- LƯỚI CHỌN LAYOUT (ĐÃ SỬA LỖI LƯỚT CUỘN) --- */
 .layout-grid { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 20px; 
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px; 
     width: 100%; 
-    max-width: 400px; 
-    max-height: 55vh; /* Giới hạn chiều cao để kích hoạt thanh cuộn */
-    overflow-y: auto; /* Bật tính năng lướt lên xuống */
-    padding: 10px; /* Tránh việc box-shadow bị cắt */
+    max-width: 500px;
+    padding: 10px 15px;
+    
+    /* --- 2 DÒNG NÀY SẼ CỨU SỐNG TÍNH NĂNG LƯỚT --- */
+    max-height: 65vh; 
+    overflow-y: auto; 
 }
 
-/* Trang trí thanh cuộn (Scrollbar) cho đẹp mắt */
+/* Kế thừa thanh cuộn màu hồng siêu xinh */
 .layout-grid::-webkit-scrollbar {
     width: 6px;
 }
 .layout-grid::-webkit-scrollbar-thumb {
-    background-color: #d16b86; /* Màu hồng pastel */
+    background-color: #d16b86;
     border-radius: 10px;
 }
 .layout-grid::-webkit-scrollbar-track {
     background: transparent;
 }
 
-/* Định dạng lại nút bấm để chứa hình ảnh */
-.layout-btn {
+.layout-btn { 
+    position: relative; 
     background: white; 
     border: 2px solid #eee; 
-    padding: 15px;
-    border-radius: 16px; 
+    padding: 0; 
+    border-radius: 12px; 
     cursor: pointer; 
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.04); 
-    transition: all 0.3s ease;
+    overflow: hidden; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02); 
+    transition: all 0.2s ease;
+    /* ĐÃ XÓA CHIỀU CAO CỐ ĐỊNH Ở ĐÂY */
 }
 
 .layout-btn:hover { 
     border-color: #d16b86; 
     transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(209, 107, 134, 0.2);
-}
-
-/* Định dạng cho bức ảnh Frame thu nhỏ */
-.layout-preview {
-    width: 100%;
-    max-height: 250px;
-    object-fit: contain;
-    border-radius: 8px;
-    background-color: #222; /* Lót nền tối để nổi bật khung viền trắng của Polaroid */
 }
 
 .layout-preview-strip {
     position: relative;
     width: 100%;
-    max-height: 250px;
-    overflow: hidden;
+    height: auto; /* Tự động ôm sát chiều cao của ảnh */
+    display: block;
+    background-color: #000;
     border-radius: 12px;
+    overflow: hidden;
 }
 
 .frame-img-preview {
     width: 100%;
-    height: auto;
+    height: auto; /* Hiển thị đúng tỷ lệ thực, không bị dư viền */
     display: block;
-    border-radius: 12px;
+    position: relative;
+    z-index: 2;
 }
 
 .slot-overlay-preview {
     position: absolute;
-    border: 2px dashed rgba(255, 255, 255, 0.8);
-    background: rgba(0, 0, 0, 0.22);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
-    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.95);
+    border-radius: 6px;
+    z-index: 1;
     pointer-events: none;
 }
 
 .layout-name-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
     width: 100%;
-    text-align: center;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #333;
-    margin-top: 12px;
-}
-
-/* Tên khung hiển thị bên dưới ảnh */
-.layout-name {
-    font-size: 1.1rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    color: white;
+    padding: 18px 10px 10px;
     font-weight: 600;
-    color: #444;
+    text-align: center;
+    font-size: 0.95rem;
+    z-index: 3;
 }
 /* --- LƯỚI CHỌN ẢNH (SELECTION GRID) --- */
 .selection-grid {
