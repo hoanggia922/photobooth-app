@@ -29,16 +29,16 @@ const LAYOUTS = [
         id: 'frame-strip-bear',
         name: 'Khung Bé Gấu 5x16',
         requiredPhotos: 4,
-        frameUrl: '/static/congau.png', // Hãy chắc chắn đây là file PNG nền trong suốt
+        frameUrl: '/static/congau.png', // Hoạt động hoàn hảo với PNG
         slots: [
-            // Ô 1 (Trên cùng)
-            { cx: 0.5, cy: 0.2974, w: 0.9171, h: 0.1852, angle: 0 },
+            // Ô 1 (Trên cùng) - Đã được kéo lên đúng vị trí
+            { cx: 0.5, cy: 0.1122, w: 0.9171, h: 0.1852, angle: 0 },
             // Ô 2
-            { cx: 0.5, cy: 0.5039, w: 0.9154, h: 0.1857, angle: 0 },
+            { cx: 0.5, cy: 0.3183, w: 0.9154, h: 0.1857, angle: 0 },
             // Ô 3 
-            { cx: 0.5, cy: 0.7098, w: 0.9205, h: 0.1857, angle: 0 },
+            { cx: 0.5, cy: 0.5241, w: 0.9205, h: 0.1857, angle: 0 },
             // Ô 4 (Dưới cùng)
-            { cx: 0.5, cy: 0.9172, w: 0.9154, h: 0.1868, angle: 0 }
+            { cx: 0.5, cy: 0.7304, w: 0.9154, h: 0.1868, angle: 0 }
         ]
     },
     {
@@ -47,10 +47,10 @@ const LAYOUTS = [
         requiredPhotos: 4,
         frameUrl: '/static/final.png',
         slots: [
-            { cx: 0.5, cy: 0.2974, w: 0.9171, h: 0.1852, angle: 0 },
-            { cx: 0.5, cy: 0.5039, w: 0.9154, h: 0.1857, angle: 0 },
-            { cx: 0.5, cy: 0.7098, w: 0.9205, h: 0.1857, angle: 0 },
-            { cx: 0.5, cy: 0.9172, w: 0.9154, h: 0.1868, angle: 0 }
+            { cx: 0.5, cy: 0.1122, w: 0.9171, h: 0.1852, angle: 0 },
+            { cx: 0.5, cy: 0.3183, w: 0.9154, h: 0.1857, angle: 0 },
+            { cx: 0.5, cy: 0.5241, w: 0.9205, h: 0.1857, angle: 0 },
+            { cx: 0.5, cy: 0.7304, w: 0.9154, h: 0.1868, angle: 0 }
         ]
     },
     {
@@ -59,10 +59,10 @@ const LAYOUTS = [
         requiredPhotos: 4,
         frameUrl: '/static/hiepsi.png',
         slots: [
-            { cx: 0.5, cy: 0.2974, w: 0.9171, h: 0.1852, angle: 0 },
-            { cx: 0.5, cy: 0.5039, w: 0.9154, h: 0.1857, angle: 0 },
-            { cx: 0.5, cy: 0.7098, w: 0.9205, h: 0.1857, angle: 0 },
-            { cx: 0.5, cy: 0.9172, w: 0.9154, h: 0.1868, angle: 0 }
+            { cx: 0.5, cy: 0.1122, w: 0.9171, h: 0.1852, angle: 0 },
+            { cx: 0.5, cy: 0.3183, w: 0.9154, h: 0.1857, angle: 0 },
+            { cx: 0.5, cy: 0.5241, w: 0.9205, h: 0.1857, angle: 0 },
+            { cx: 0.5, cy: 0.7304, w: 0.9154, h: 0.1868, angle: 0 }
         ]
     }
 ];
