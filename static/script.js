@@ -200,7 +200,7 @@ function drawImageProp(ctx, img, x, y, w, h) {
     ctx.drawImage(img, sx, sy, sWidth, sHeight, x, y, w, h);
 }
 
-// --- BƯỚC 5: XỬ LÝ GHÉP FRAME VÀ HIỂN THỊ ---
+// --- BƯỚC 5: XỬ LÝ GHÉP FRAME VÀ HIỂN THỊ (GIỮ NGUYÊN ICON TRANG TRÍ) ---
 btnConfirmSelection.addEventListener('click', () => {
     switchScreen('final');
     
@@ -212,10 +212,12 @@ btnConfirmSelection.addEventListener('click', () => {
         canvas.height = frameImg.height;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 1. VẼ KHUNG JPG LÊN ĐẦU TIÊN (Làm lớp nền dưới cùng)
-        ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+        // Lớp nền trắng mặc định dưới cùng
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // 2. SAU ĐÓ VẼ 4 ẢNH CỦA KHÁCH HÀNG ĐÈ LÊN CÁC Ô ĐEN
+        // 1. VẼ TẤT CẢ ẢNH CỦA KHÁCH HÀNG TRƯỚC (Lớp ở dưới cùng)
+        let loadedCount = 0;
         currentLayout.slots.forEach((config, i) => {
             let selectedPhotoIndex = userSelectedIndices[i];
             let photoImg = new Image();
@@ -231,36 +233,45 @@ btnConfirmSelection.addEventListener('click', () => {
                 ctx.save();
                 ctx.translate(slotCX, slotCY);
                 ctx.rotate(radians);
-                // Vẽ ảnh của khách hàng đè lên trên (sử dụng hàm cắt cúp chuẩn xác)
                 drawImageProp(ctx, photoImg, -slotW / 2, -slotH / 2, slotW, slotH);
                 ctx.restore();
+                
+                loadedCount++;
+                
+                // 2. KHI VẼ XONG 4 TẤM ẢNH, TIẾN HÀNH ĐỤC LỖ KHUNG JPG VÀ ĐÈ LÊN TRÊN
+                if (loadedCount === currentLayout.slots.length) {
+                    // Tạo một Canvas phụ ngầm để xử lý ảnh màu
+                    const tempCanvas = document.createElement('canvas');
+                    tempCanvas.width = canvas.width;
+                    tempCanvas.height = canvas.height;
+                    const tempCtx = tempCanvas.getContext('2d');
+                    
+                    // Vẽ khung hình gốc vào canvas phụ
+                    tempCtx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+                    
+                    // Lấy mảng dữ liệu pixel (R, G, B, A) của khung hình
+                    const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+                    const data = imgData.data;
+                    
+                    // Vòng lặp kiểm tra từng điểm ảnh
+                    for (let j = 0; j < data.length; j += 4) {
+                        let r = data[j];     // Kênh màu Đỏ
+                        let g = data[j + 1]; // Kênh màu Xanh lá
+                        let b = data[j + 2]; // Kênh màu Xanh dương
+                        
+                        // Nếu là màu đen hoặc gần đen (Xử lý nhiễu do nén ảnh JPG)
+                        if (r < 35 && g < 35 && b < 35) {
+                            data[j + 3] = 0; // Đặt Alpha (độ đậm đặc) bằng 0 -> Biến thành TRONG SUỐT
+                        }
+                    }
+                    
+                    // Cập nhật lại dữ liệu pixel đã đục lỗ vào canvas phụ
+                    tempCtx.putImageData(imgData, 0, 0);
+                    
+                    // Vẽ dán đè bộ khung đã được làm trong suốt các ô đen lên TRÊN CÙNG ảnh khách hàng
+                    ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
+                }
             };
         });
     };
-});
-
-document.getElementById('btnRetake').addEventListener('click', () => {
-    // Kích hoạt lại luồng camera khi chụp lại
-    document.getElementById('btnStart').click();
-});
-
-// NÚT LƯU ẢNH: Vừa tải trực tiếp về máy vừa gửi bản sao lên server Flask
-document.getElementById('btnSave').addEventListener('click', () => {
-    const dataURL = canvas.toDataURL('image/jpeg', 0.9);
-    
-    // 1. Download client-side về máy tính/điện thoại người dùng
-    const link = document.createElement('a');
-    link.download = `photobooth_${currentLayout.id}_${new Date().getTime()}.jpg`;
-    link.href = dataURL;
-    link.click();
-
-    // 2. Đồng thời gửi ngầm về server Python Flask để lưu giữ lưu trữ
-    fetch('/save-photo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: dataURL })
-    })
-    .then(response => response.json())
-    .then(data => console.log("Đã lưu dự phòng tại server:", data.message))
-    .catch(error => console.error('Lỗi lưu server:', error));
 });
