@@ -25,13 +25,39 @@ let userSelectedIndices = [];
 
 const LAYOUTS = [
     {
-        id: 'frame1',
-        name: 'Khung Ngang 2 Ảnh',
-        requiredPhotos: 2,
-        frameUrl: '/static/frame1.png', 
+        id: 'frame-bear',
+        name: 'Khung Bé Gấu',
+        requiredPhotos: 4,
+        frameUrl: '/static/congau.jpg', 
         slots: [
-            {cx: 0.50, cy: 0.26, w: 0.82, h: 0.32, angle: -2.5 }, 
-            {cx: 0.50, cy: 0.73, w: 0.82, h: 0.32, angle: 3.0 }  
+            { cx: 0.5, cy: 0.16, w: 0.88, h: 0.18, angle: 0 },
+            { cx: 0.5, cy: 0.36, w: 0.88, h: 0.18, angle: 0 },
+            { cx: 0.5, cy: 0.56, w: 0.88, h: 0.18, angle: 0 },
+            { cx: 0.5, cy: 0.76, w: 0.88, h: 0.18, angle: 0 }
+        ]
+    },
+    {
+        id: 'frame-boy',
+        name: 'Khung Bé Trai',
+        requiredPhotos: 4,
+        frameUrl: '/static/final.jpg',
+        slots: [
+            { cx: 0.5, cy: 0.16, w: 0.88, h: 0.18, angle: 0 },
+            { cx: 0.5, cy: 0.36, w: 0.88, h: 0.18, angle: 0 },
+            { cx: 0.5, cy: 0.56, w: 0.88, h: 0.18, angle: 0 },
+            { cx: 0.5, cy: 0.76, w: 0.88, h: 0.18, angle: 0 }
+        ]
+    },
+    {
+        id: 'frame-knight',
+        name: 'Khung Hiệp Sĩ',
+        requiredPhotos: 4,
+        frameUrl: '/static/hiepsi.jpg',
+        slots: [
+            { cx: 0.5, cy: 0.16, w: 0.88, h: 0.18, angle: 0 },
+            { cx: 0.5, cy: 0.36, w: 0.88, h: 0.18, angle: 0 },
+            { cx: 0.5, cy: 0.56, w: 0.88, h: 0.18, angle: 0 },
+            { cx: 0.5, cy: 0.76, w: 0.88, h: 0.18, angle: 0 }
         ]
     }
 ];
