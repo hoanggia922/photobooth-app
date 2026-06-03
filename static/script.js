@@ -227,7 +227,7 @@ function drawImageProp(ctx, img, x, y, w, h) {
     ctx.drawImage(img, sx, sy, sWidth, sHeight, x, y, w, h);
 }
 
-// --- BƯỚC 5: XỬ LÝ GHÉP FRAME VÀ HIỂN THỊ (AN TOÀN CHUẨN XÁC CHO FILE JPG) ---
+// --- BƯỚC 5: XỬ LÝ GHÉP FRAME VÀ HIỂN THỊ (DÀNH CHO KHUNG ĐƠN PNG) ---
 btnConfirmSelection.addEventListener('click', () => {
     switchScreen('final');
     
@@ -241,14 +241,14 @@ btnConfirmSelection.addEventListener('click', () => {
         canvas.height = frameImg.height;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 1. VẼ TẤM KHUNG GỐC XUỐNG DƯỚI CÙNG LÀM NỀN TRƯỚC
-        ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+        // Lớp nền trắng
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         let loadedCount = 0;
-        const slotsToDraw = currentLayout.slots.slice(0, currentLayout.requiredPhotos);
         
-        // 2. VẼ ẢNH KHÁCH CHỤP ĐÈ LÊN TRÊN CÁC Ô ĐEN CỦA KHUNG NỀN
-        slotsToDraw.forEach((config, i) => {
+        // Vẽ đúng 4 ảnh mà khách chọn
+        currentLayout.slots.forEach((config, i) => {
             let selectedPhotoIndex = userSelectedIndices[i];
             let photoImg = new Image();
             photoImg.src = capturedPhotos[selectedPhotoIndex];
@@ -263,14 +263,14 @@ btnConfirmSelection.addEventListener('click', () => {
                 ctx.save();
                 ctx.translate(slotCX, slotCY);
                 ctx.rotate(radians);
-                
-                // Cắt và dán ảnh của khách đè lên trên khung
                 drawImageProp(ctx, photoImg, -slotW / 2, -slotH / 2, slotW, slotH);
                 ctx.restore();
                 
                 loadedCount++;
-                if (loadedCount === slotsToDraw.length) {
-                    console.log("Đã ghép xong 4 ảnh lên khung!");
+                
+                // Khi vẽ xong 4 tấm ảnh, ụp cái khung PNG (nền trong suốt) lên trên cùng!
+                if (loadedCount === currentLayout.slots.length) {
+                    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
                 }
             };
         });
