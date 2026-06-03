@@ -135,7 +135,7 @@ body {
     position: relative;
     width: 500px;
     max-width: 90vw;
-    aspect-ratio: 4/3;
+    aspect-ratio: 16/9;
     background: #000;
     border-radius: 16px;
     overflow: hidden;
