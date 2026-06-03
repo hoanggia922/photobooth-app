@@ -173,14 +173,30 @@ body {
 @keyframes flashAnim { 0% { opacity: 1; } 100% { opacity: 0; } }
 
 /* --- LƯỚI CHỌN LAYOUT (NÂNG CẤP LƯỚT CUỘN) --- */
-/* --- LƯỚI CHỌN LAYOUT (CẬP NHẬT CHUẨN TỌA ĐỘ) --- */
+/* --- LƯỚI CHỌN LAYOUT (ĐÃ SỬA LỖI LƯỚT CUỘN) --- */
 .layout-grid { 
     display: grid; 
-    grid-template-columns: repeat(2, 1fr); /* Chia 2 cột cho dải 5x16 thon gọn */
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px; 
     width: 100%; 
     max-width: 500px;
-    padding: 0 15px;
+    padding: 10px 15px;
+    
+    /* --- 2 DÒNG NÀY SẼ CỨU SỐNG TÍNH NĂNG LƯỚT --- */
+    max-height: 65vh; 
+    overflow-y: auto; 
+}
+
+/* Kế thừa thanh cuộn màu hồng siêu xinh */
+.layout-grid::-webkit-scrollbar {
+    width: 6px;
+}
+.layout-grid::-webkit-scrollbar-thumb {
+    background-color: #d16b86;
+    border-radius: 10px;
+}
+.layout-grid::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 .layout-btn { 
