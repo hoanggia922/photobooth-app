@@ -16,6 +16,8 @@ const flashEl = document.getElementById('flash');
 const progressEl = document.getElementById('captureProgress');
 const selectionContainer = document.getElementById('selectionContainer');
 const btnConfirmSelection = document.getElementById('btnConfirmSelection');
+const btnRetake = document.getElementById('btnRetake');
+const btnStart = document.getElementById('btnStart');
 
 // --- APP STATE ---
 let currentLayout = null; 
@@ -66,12 +68,11 @@ const LAYOUTS = [
 ];
 
 // --- BƯỚC 1: BẤM START -> MỞ CAMERA -> CHỌN LAYOUT ---
-document.getElementById('btnStart').addEventListener('click', () => {
-    // Xin quyền và bật webcam ngay lập tức
+function startCameraSessionGlobal() {
     navigator.mediaDevices.getUserMedia({ video: true })
         .then(stream => {
             video.srcObject = stream;
-            // Camera đã lên hình, đổ danh sách layout và chuyển màn hình
+            video.play().catch(err => console.warn('Lỗi autoplay video:', err));
             renderLayoutOptions();
             switchScreen('layout');
         })
@@ -79,7 +80,12 @@ document.getElementById('btnStart').addEventListener('click', () => {
             console.error("Lỗi camera: ", err);
             alert("Vui lòng cấp quyền camera trên trình duyệt để tiếp tục!");
         });
-});
+}
+
+btnStart.addEventListener('click', startCameraSessionGlobal);
+if (btnRetake) {
+    btnRetake.addEventListener('click', startCameraSessionGlobal);
+}
 
 // --- BƯỚC 2: CHỌN LAYOUT ---
 // Hàm hiển thị danh sách Layout (Không cần lọc ngang/dọc nữa)
@@ -96,12 +102,7 @@ function renderLayoutOptions() {
         const previewContainer = document.createElement('div');
         previewContainer.className = 'layout-preview-strip';
 
-        const frameImg = document.createElement('img');
-        frameImg.src = layout.frameUrl;
-        frameImg.alt = layout.name;
-        frameImg.className = 'frame-img-preview';
-        previewContainer.appendChild(frameImg);
-
+        // 1. Xếp các ô đen làm nền phía dưới trước
         layout.slots.forEach(slot => {
             const slotEl = document.createElement('div');
             slotEl.className = 'slot-overlay-preview';
@@ -109,9 +110,16 @@ function renderLayoutOptions() {
             slotEl.style.top = `${(slot.cy - slot.h / 2) * 100}%`;
             slotEl.style.width = `${slot.w * 100}%`;
             slotEl.style.height = `${slot.h * 100}%`;
-            slotEl.style.transform = `rotate(${slot.angle}deg)`;
+            slotEl.style.transform = `rotate(${slot.angle || 0}deg)`;
             previewContainer.appendChild(slotEl);
         });
+
+        // 2. Đặt ảnh khung PNG lên trên cùng
+        const frameImg = document.createElement('img');
+        frameImg.src = layout.frameUrl;
+        frameImg.alt = layout.name;
+        frameImg.className = 'frame-img-preview';
+        previewContainer.appendChild(frameImg);
 
         btn.appendChild(previewContainer);
 
@@ -238,9 +246,10 @@ btnConfirmSelection.addEventListener('click', () => {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         let loadedCount = 0;
+        const slotsToDraw = currentLayout.slots.slice(0, currentLayout.requiredPhotos);
         
-        // Vẽ đúng 4 ảnh mà khách chọn
-        currentLayout.slots.forEach((config, i) => {
+        // Vẽ đúng số ảnh khách chọn theo yêu cầu Layout
+        slotsToDraw.forEach((config, i) => {
             let selectedPhotoIndex = userSelectedIndices[i];
             let photoImg = new Image();
             photoImg.src = capturedPhotos[selectedPhotoIndex];
@@ -260,8 +269,7 @@ btnConfirmSelection.addEventListener('click', () => {
                 
                 loadedCount++;
                 
-                // Khi vẽ xong 4 tấm ảnh, ụp cái khung PNG (nền trong suốt) lên trên cùng!
-                if (loadedCount === currentLayout.slots.length) {
+                if (loadedCount === slotsToDraw.length) {
                     ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
                 }
             };
