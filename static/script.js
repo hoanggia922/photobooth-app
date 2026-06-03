@@ -1,7 +1,6 @@
 // --- DOM ELEMENTS ---
 const screens = {
     welcome: document.getElementById('screen-welcome'),
-    // Đã xóa orientation
     layout: document.getElementById('screen-layout'),
     capture: document.getElementById('screen-capture'),
     selection: document.getElementById('screen-selection'),
@@ -81,6 +80,7 @@ document.getElementById('btnStart').addEventListener('click', () => {
 // --- BƯỚC 2: CHỌN LAYOUT ---
 // Hàm hiển thị danh sách Layout (Không cần lọc ngang/dọc nữa)
 // Hàm hiển thị danh sách Layout (Đã thêm ảnh preview và sửa lỗi click)
+// Hàm hiển thị danh sách Layout (Đã tối ưu chuẩn Form)
 function renderLayoutOptions() {
     const container = document.getElementById('layoutContainer');
     container.innerHTML = '';
@@ -89,32 +89,27 @@ function renderLayoutOptions() {
         const btn = document.createElement('button');
         btn.className = 'layout-btn';
         
-        // 1. Tạo thẻ ảnh để hiển thị hình dáng khung
-        const img = document.createElement('img');
-        img.src = layout.frameUrl; // Lấy ảnh từ /static/frame1.png
-        img.className = 'layout-preview';
-        img.alt = layout.name;
+        // Sử dụng innerHTML để code ngắn gọn, chèn trực tiếp biến từ mảng LAYOUTS
+        btn.innerHTML = `
+            <img src="${layout.frameUrl}" alt="${layout.name}" class="layout-preview">
+            <span class="layout-name">${layout.name}</span>
+        `;
         
-        // 2. Tạo thẻ tên khung
-        const text = document.createElement('span');
-        text.innerText = layout.name;
-        text.className = 'layout-name';
-        
-        // Gắn ảnh và chữ vào nút bấm
-        btn.appendChild(img);
-        btn.appendChild(text);
-        
-        // 3. Xử lý sự kiện click (SỬA LỖI: Thêm tham số 'e')
+        // Xử lý sự kiện click chọn khung
         btn.addEventListener('click', (e) => {
-            e.currentTarget.disabled = true;
-            currentLayout = layout;
-            startCaptureSession(); // Vào thẳng phiên chụp
+            // 1. Khóa nút ngay lập tức để tránh khách lỡ tay nhấp đúp làm lỗi luồng
+            e.currentTarget.disabled = true; 
+            
+            // 2. Cập nhật Layout đang được chọn vào biến toàn cục
+            currentLayout = layout; 
+            
+            // 3. Tiến hành vào thẳng màn hình đếm ngược chụp ảnh
+            startCaptureSession(); 
         });
         
         container.appendChild(btn);
     });
 }
-
 // Hàm switchScreen hỗ trợ ẩn/hiện mượt mà
 function switchScreen(screenName) {
     Object.values(screens).forEach(s => s.classList.remove('active'));
