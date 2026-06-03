@@ -212,10 +212,10 @@ btnConfirmSelection.addEventListener('click', () => {
         canvas.height = frameImg.height;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // 1. VẼ KHUNG JPG LÊN ĐẦU TIÊN (Làm lớp nền dưới cùng)
+        ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
 
-        let loadedCount = 0;
+        // 2. SAU ĐÓ VẼ 4 ẢNH CỦA KHÁCH HÀNG ĐÈ LÊN CÁC Ô ĐEN
         currentLayout.slots.forEach((config, i) => {
             let selectedPhotoIndex = userSelectedIndices[i];
             let photoImg = new Image();
@@ -231,14 +231,9 @@ btnConfirmSelection.addEventListener('click', () => {
                 ctx.save();
                 ctx.translate(slotCX, slotCY);
                 ctx.rotate(radians);
+                // Vẽ ảnh của khách hàng đè lên trên (sử dụng hàm cắt cúp chuẩn xác)
                 drawImageProp(ctx, photoImg, -slotW / 2, -slotH / 2, slotW, slotH);
                 ctx.restore();
-                
-                loadedCount++;
-                // Khi tất cả các ảnh thành phần đã vẽ xong, đè khung nền lên
-                if (loadedCount === currentLayout.slots.length) {
-                    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-                }
             };
         });
     };
