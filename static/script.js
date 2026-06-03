@@ -88,23 +88,38 @@ function renderLayoutOptions() {
     LAYOUTS.forEach(layout => {
         const btn = document.createElement('button');
         btn.className = 'layout-btn';
-        
-        // Sử dụng innerHTML để code ngắn gọn, chèn trực tiếp biến từ mảng LAYOUTS
-        btn.innerHTML = `
-            <img src="${layout.frameUrl}" alt="${layout.name}" class="layout-preview">
-            <span class="layout-name">${layout.name}</span>
-        `;
-        
-        // Xử lý sự kiện click chọn khung
+
+        const previewContainer = document.createElement('div');
+        previewContainer.className = 'layout-preview-strip';
+
+        const frameImg = document.createElement('img');
+        frameImg.src = layout.frameUrl;
+        frameImg.alt = layout.name;
+        frameImg.className = 'frame-img-preview';
+        previewContainer.appendChild(frameImg);
+
+        layout.slots.forEach(slot => {
+            const slotEl = document.createElement('div');
+            slotEl.className = 'slot-overlay-preview';
+            slotEl.style.left = `${(slot.cx - slot.w / 2) * 100}%`;
+            slotEl.style.top = `${(slot.cy - slot.h / 2) * 100}%`;
+            slotEl.style.width = `${slot.w * 100}%`;
+            slotEl.style.height = `${slot.h * 100}%`;
+            slotEl.style.transform = `rotate(${slot.angle}deg)`;
+            previewContainer.appendChild(slotEl);
+        });
+
+        btn.appendChild(previewContainer);
+
+        const nameEl = document.createElement('div');
+        nameEl.className = 'layout-name-overlay';
+        nameEl.innerText = layout.name;
+        btn.appendChild(nameEl);
+
         btn.addEventListener('click', (e) => {
-            // 1. Khóa nút ngay lập tức để tránh khách lỡ tay nhấp đúp làm lỗi luồng
-            e.currentTarget.disabled = true; 
-            
-            // 2. Cập nhật Layout đang được chọn vào biến toàn cục
-            currentLayout = layout; 
-            
-            // 3. Tiến hành vào thẳng màn hình đếm ngược chụp ảnh
-            startCaptureSession(); 
+            e.currentTarget.disabled = true;
+            currentLayout = layout;
+            startCaptureSession();
         });
         
         container.appendChild(btn);
@@ -218,7 +233,8 @@ btnConfirmSelection.addEventListener('click', () => {
 
         // 1. VẼ TẤT CẢ ẢNH CỦA KHÁCH HÀNG TRƯỚC (Lớp ở dưới cùng)
         let loadedCount = 0;
-        currentLayout.slots.forEach((config, i) => {
+        const slotsToDraw = currentLayout.slots.slice(0, currentLayout.requiredPhotos);
+        slotsToDraw.forEach((config, i) => {
             let selectedPhotoIndex = userSelectedIndices[i];
             let photoImg = new Image();
             photoImg.src = capturedPhotos[selectedPhotoIndex];
@@ -238,8 +254,8 @@ btnConfirmSelection.addEventListener('click', () => {
                 
                 loadedCount++;
                 
-                // 2. KHI VẼ XONG 4 TẤM ẢNH, TIẾN HÀNH ĐỤC LỖ KHUNG JPG VÀ ĐÈ LÊN TRÊN
-                if (loadedCount === currentLayout.slots.length) {
+                // 2. KHI VẼ XONG SỐ ẢNH YÊU CẦU, TIẾN HÀNH ĐỀU KHUNG ẢNH LÊN TRÊN
+                if (loadedCount === slotsToDraw.length) {
                     // Tạo một Canvas phụ ngầm để xử lý ảnh màu
                     const tempCanvas = document.createElement('canvas');
                     tempCanvas.width = canvas.width;
