@@ -276,3 +276,31 @@ btnConfirmSelection.addEventListener('click', () => {
         });
     };
 });
+
+// NÚT LƯU ẢNH: Vừa tải trực tiếp về máy vừa gửi bản sao lên server Flask (Đã sửa lỗi & Tối ưu Mobile)
+const btnSave = document.getElementById('btnSave');
+if (btnSave) {
+    btnSave.addEventListener('click', () => {
+        const dataURL = canvas.toDataURL('image/jpeg', 0.9);
+        
+        // 1. Download client-side về máy tính/điện thoại người dùng
+        const link = document.createElement('a');
+        link.download = `photobooth_${currentLayout ? currentLayout.id : 'photo'}_${new Date().getTime()}.jpg`;
+        link.href = dataURL;
+        
+        // Mẹo bắt buộc: Phải append vào body thì Safari/Chrome trên điện thoại mới chịu tải file xuống
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // 2. Đồng thời gửi ngầm về server Python Flask để lưu giữ lưu trữ dự phòng
+        fetch('/save-photo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: dataURL })
+        })
+        .then(response => response.json())
+        .then(data => console.log("Đã lưu dự phòng tại server:", data.message))
+        .catch(error => console.error('Lỗi lưu server:', error));
+    });
+}
