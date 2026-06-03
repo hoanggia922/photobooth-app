@@ -27,7 +27,7 @@ const LAYOUTS = [
         id: 'frame-bear',
         name: 'Khung Bé Gấu',
         requiredPhotos: 4,
-        frameUrl: '/static/congau.jpg', 
+        frameUrl: '/static/congau.png', 
         slots: [
             { cx: 0.5, cy: 0.16, w: 0.88, h: 0.18, angle: 0 },
             { cx: 0.5, cy: 0.36, w: 0.88, h: 0.18, angle: 0 },
@@ -39,7 +39,7 @@ const LAYOUTS = [
         id: 'frame-boy',
         name: 'Khung Bé Trai',
         requiredPhotos: 4,
-        frameUrl: '/static/final.jpg',
+        frameUrl: '/static/final.png',
         slots: [
             { cx: 0.5, cy: 0.16, w: 0.88, h: 0.18, angle: 0 },
             { cx: 0.5, cy: 0.36, w: 0.88, h: 0.18, angle: 0 },
@@ -51,7 +51,7 @@ const LAYOUTS = [
         id: 'frame-knight',
         name: 'Khung Hiệp Sĩ',
         requiredPhotos: 4,
-        frameUrl: '/static/hiepsi.jpg',
+        frameUrl: '/static/hiepsi.png',
         slots: [
             { cx: 0.5, cy: 0.16, w: 0.88, h: 0.18, angle: 0 },
             { cx: 0.5, cy: 0.36, w: 0.88, h: 0.18, angle: 0 },
