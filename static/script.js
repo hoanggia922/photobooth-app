@@ -30,7 +30,7 @@ let userSelectedIndices = [];
 const LAYOUTS = [
     {
         id: 'frame-strip-bear',
-        name: 'Khung Bé Gấu 5x16',
+        name: 'Chú Gấu - Malice',
         requiredPhotos: 4,
         frameUrl: '/static/congau.png', // Hoạt động hoàn hảo với PNG
         overlayUrls: [
@@ -53,7 +53,7 @@ const LAYOUTS = [
     },
     {
         id: 'frame-strip-boy',
-        name: 'Khung Bé Trai 5x16',
+        name: 'Cậu Bé - Henry',
         requiredPhotos: 4,
         frameUrl: '/static/final.png',
         overlayUrls: [
@@ -71,7 +71,7 @@ const LAYOUTS = [
     },
     {
         id: 'frame-strip-knight',
-        name: 'Khung Hiệp Sĩ 5x16',
+        name: 'Hiệp Sĩ - Martin',
         requiredPhotos: 4,
         frameUrl: '/static/hiepsi.png',
         overlayUrls: [
