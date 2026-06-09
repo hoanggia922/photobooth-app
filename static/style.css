@@ -213,18 +213,28 @@ body {
 @keyframes flashAnim { 0% { opacity: 1; } 100% { opacity: 0; } }
 
 /* --- LƯỚI CHỌN LAYOUT (NÂNG CẤP LƯỚT CUỘN) --- */
-/* --- LƯỚI CHỌN LAYOUT (ĐÃ SỬA LỖI LƯỚT CUỘN) --- */
 .layout-grid { 
     display: grid; 
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 15px; 
     width: 100%; 
-    max-width: 500px;
+    max-width: 1080px;
     padding: 10px 15px;
-    
-    /* --- 2 DÒNG NÀY SẼ CỨU SỐNG TÍNH NĂNG LƯỚT --- */
     max-height: 65vh; 
     overflow-y: auto; 
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .layout-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .layout-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Kế thừa thanh cuộn màu hồng siêu xinh */
@@ -241,17 +251,20 @@ body {
 
 .layout-btn { 
     position: relative; 
-    background: white; 
+    background: transparent; 
     border: 2px solid #eee; 
     padding: 0; 
     border-radius: 12px; 
     cursor: pointer; 
     display: flex;
     flex-direction: column;
+    align-items: center;
     overflow: hidden; 
     box-shadow: 0 4px 12px rgba(0,0,0,0.02); 
     transition: all 0.2s ease;
-    /* ĐÃ XÓA CHIỀU CAO CỐ ĐỊNH Ở ĐÂY */
+    width: fit-content;  /* <--- THAY ĐỔI: Để nút bọc ngoài co lại vừa vặn theo dải frame */
+    margin: 0 auto;
+    
 }
 
 .layout-btn:hover { 
@@ -282,17 +295,24 @@ body {
 
 .layout-preview-strip {
     position: relative;
-    width: 100%;
-    height: auto; /* Tự động ôm sát chiều cao của ảnh */
-    display: block;
-    background-color: #000;
+    width: fit-content;  /* Chỉ rộng vừa khít chiều ngang ảnh */
+    height: fit-content; /* Chỉ cao vừa khít chiều dọc ảnh */
+    max-width: 140px;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;    
     border-radius: 12px;
     overflow: hidden;
 }
 
 .frame-img-preview {
     width: 100%;
-    height: auto; /* Hiển thị đúng tỷ lệ thực, không bị dư viền */
+    height: auto;
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain; /* Hiển thị trọn khung, không cắt */
     display: block;
     position: relative;
     z-index: 2;
@@ -441,13 +461,15 @@ footer .heart-icon { color: #d16b86; }
 /* Khung Strip ở giữa */
 .strip-preview-container {
     width: 170px;
-    max-width: 170px;
+    max-width: auto;   
+    max-height: auto;
     background: #7ca8d8; /* Khung nền xanh */
     padding: 15px;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    margin-top: 30px;
 }
 .strip-preview-container {
     padding: 20px; /* đệm thêm để ô không chạm vào viền */
@@ -479,7 +501,6 @@ footer .heart-icon { color: #d16b86; }
     content: "";
     position: absolute;
     inset: 6px; /* khoảng cách từ mép ngoài của container */
-    border: 6px solid rgba(255,255,255,0.85); /* màu khung, thay đổi nếu cần */
     border-radius: 8px;
     pointer-events: none;
     z-index: 5;
