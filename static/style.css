@@ -130,12 +130,39 @@ body {
 .btn-start:hover:not(:disabled) { background: #d16b86; color: white; }
 .btn-start:disabled { opacity: 0.5; cursor: not-allowed; border-color: #ccc; color: #999; }
 
+.btn {
+    background: linear-gradient(135deg, #d16b86 0%, #ff7c9b 100%);
+    color: white;
+    border: none;
+    padding: 13px 28px;
+    border-radius: 50px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 12px 28px rgba(209, 107, 134, 0.22);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    min-width: 230px;
+}
+.btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+}
+.btn:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 8px 20px rgba(209, 107, 134, 0.2);
+}
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
 /* --- CẤU HÌNH PHÒNG CHỤP (CAPTURE SCREEN) --- */
 .camera-box {
     position: relative;
-    width: 500px;
-    max-width: 90vw;
-    aspect-ratio: 4/3;
+    width: 450px;
+    max-width: 85vw;
+    aspect-ratio: 1.55;
     background: #000;
     border-radius: 16px;
     overflow: hidden;
@@ -151,6 +178,19 @@ body {
     height: 100%;
     object-fit: cover;
     transform: scaleX(-1); /* Gương camera */
+}
+
+.camera-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Dùng cover để ảnh nhân vật lấp đầy khung */
+    pointer-events: none;
+    z-index: 5;
+    opacity: 1; /* Làm mờ 100% để khách canh góc chuẩn */
+    transition: opacity 0.3s ease;
 }
 
 #countdown {
@@ -173,18 +213,28 @@ body {
 @keyframes flashAnim { 0% { opacity: 1; } 100% { opacity: 0; } }
 
 /* --- LƯỚI CHỌN LAYOUT (NÂNG CẤP LƯỚT CUỘN) --- */
-/* --- LƯỚI CHỌN LAYOUT (ĐÃ SỬA LỖI LƯỚT CUỘN) --- */
 .layout-grid { 
     display: grid; 
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 15px; 
     width: 100%; 
-    max-width: 500px;
+    max-width: 1080px;
     padding: 10px 15px;
-    
-    /* --- 2 DÒNG NÀY SẼ CỨU SỐNG TÍNH NĂNG LƯỚT --- */
     max-height: 65vh; 
     overflow-y: auto; 
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .layout-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .layout-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Kế thừa thanh cuộn màu hồng siêu xinh */
@@ -201,17 +251,20 @@ body {
 
 .layout-btn { 
     position: relative; 
-    background: white; 
+    background: transparent; 
     border: 2px solid #eee; 
     padding: 0; 
     border-radius: 12px; 
     cursor: pointer; 
     display: flex;
     flex-direction: column;
+    align-items: center;
     overflow: hidden; 
     box-shadow: 0 4px 12px rgba(0,0,0,0.02); 
     transition: all 0.2s ease;
-    /* ĐÃ XÓA CHIỀU CAO CỐ ĐỊNH Ở ĐÂY */
+    width: fit-content;  /* <--- THAY ĐỔI: Để nút bọc ngoài co lại vừa vặn theo dải frame */
+    margin: 0 auto;
+    
 }
 
 .layout-btn:hover { 
@@ -219,19 +272,47 @@ body {
     transform: translateY(-3px);
 }
 
+.layout-btn.active {
+    border-color: #d16b86;
+    box-shadow: 0 0 0 2px rgba(209, 107, 134, 0.25),
+                0 0 18px rgba(209, 107, 134, 0.25),
+                0 12px 28px rgba(209, 107, 134, 0.18);
+    animation: shimmerBorder 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes shimmerBorder {
+    from {
+        box-shadow: 0 0 0 2px rgba(209, 107, 134, 0.25),
+                    0 0 18px rgba(209, 107, 134, 0.25),
+                    0 12px 28px rgba(209, 107, 134, 0.18);
+    }
+    to {
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.35),
+                    0 0 24px rgba(255, 255, 255, 0.45),
+                    0 18px 36px rgba(209, 107, 134, 0.28);
+    }
+}
+
 .layout-preview-strip {
     position: relative;
-    width: 100%;
-    height: auto; /* Tự động ôm sát chiều cao của ảnh */
-    display: block;
-    background-color: #000;
+    width: fit-content;  /* Chỉ rộng vừa khít chiều ngang ảnh */
+    height: fit-content; /* Chỉ cao vừa khít chiều dọc ảnh */
+    max-width: 140px;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;    
     border-radius: 12px;
     overflow: hidden;
 }
 
 .frame-img-preview {
     width: 100%;
-    height: auto; /* Hiển thị đúng tỷ lệ thực, không bị dư viền */
+    height: auto;
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain; /* Hiển thị trọn khung, không cắt */
     display: block;
     position: relative;
     z-index: 2;
@@ -322,4 +403,163 @@ footer .heart-icon { color: #d16b86; }
         text-align:center;
      }
     .selection-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* --- LƯỚI CHỌN VÀ SẮP XẾP ẢNH --- */
+.selection-workspace {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    max-width: 800px;
+    padding: 10px;
+}
+
+/* Hai cột chứa ảnh chụp hai bên */
+.photo-pool {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex: 1;
+    max-width: 170px;
+}
+
+.pool-item {
+    background: #7ca8d8; /* Màu xanh dương nhạt theo bản vẽ */
+    border: 3px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 1.55;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.pool-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.pool-item:hover {
+    transform: scale(1.05);
+}
+
+.pool-item.selected {
+    opacity: 1; /* Làm mờ ảnh đã được gán vào khung */
+    border-color: #d16b86;
+    pointer-events: none;
+}
+
+/* Khung Strip ở giữa */
+.strip-preview-container {
+    width: 170px;
+    max-width: auto;   
+    max-height: auto;
+    background: #7ca8d8; /* Khung nền xanh */
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 30px;
+}
+.strip-preview-container {
+    padding: 20px; /* đệm thêm để ô không chạm vào viền */
+    border-radius: 10px;
+    box-sizing: border-box;
+    position: relative; /* để overlay khung nằm trên cùng */
+}
+
+.strip-slot {
+    background: linear-gradient(135deg, #d16b86 0%, #ff7c9b 100%); /* Chủ đề hồng tím */
+    aspect-ratio: 1.4; 
+    border-radius: 6px;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border: 2px dashed rgba(255,255,255,0.6);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.strip-slot { z-index: 1; }
+
+/* Lớp khung giả lập nằm trên cùng, chỉ hiển thị viền để tránh ô đỏ che mất khung */
+.strip-preview-container::after {
+    content: "";
+    position: absolute;
+    inset: 6px; /* khoảng cách từ mép ngoài của container */
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 5;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08) inset;
+}
+
+.strip-slot:hover {
+    border-color: rgba(255,255,255,0.95);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(209,107,134,0.18);
+}
+
+.strip-slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+}
+
+/* Responsive cho điện thoại */
+@media (max-width: 600px) {
+    .selection-workspace {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .photo-pool {
+        flex-direction: row;
+        flex-wrap: wrap;
+        max-width: 100%;
+        justify-content: center;
+    }
+    .pool-item { width: 100px; }
+}
+
+/* --- HIỆU ỨNG KÉO THẢ (DRAG & DROP) --- */
+.pool-item[draggable="true"] {
+    cursor: grab; /* Đổi trỏ chuột thành hình bàn tay mở */
+}
+
+.pool-item[draggable="true"]:active {
+    cursor: grabbing; /* Bàn tay nắm lại khi đang kéo */
+}
+
+.pool-item.dragging {
+    opacity: 0.5; /* Làm mờ ảnh gốc khi nó đang được kéo đi */
+    transform: scale(0.95);
+    border-color: #d16b86;
+}
+
+.strip-slot.drag-over {
+    background: #d16b86; /* Đổi màu ô đỏ sang hồng khi có ảnh lơ lửng bên trên */
+    border: 3px solid white;
+    transform: scale(1.02);
+}
+
+/* Thêm transition mượt cho cả hai thành phần */
+.pool-item, .strip-slot {
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
