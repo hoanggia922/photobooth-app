@@ -11,6 +11,7 @@ const video = document.getElementById('videoElement');
 const cameraOverlay = document.getElementById('cameraOverlay');
 const canvas = document.getElementById('canvasElement');
 const ctx = canvas.getContext('2d');
+const TOTAL_CAPTURES = 8;
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const countdownEl = document.getElementById('countdown');
 const flashEl = document.getElementById('flash');
@@ -116,9 +117,6 @@ if (btnStartCapture) {
 }
 
 // --- BƯỚC 2: CHỌN LAYOUT ---
-// Hàm hiển thị danh sách Layout (Không cần lọc ngang/dọc nữa)
-// Hàm hiển thị danh sách Layout (Đã thêm ảnh preview và sửa lỗi click)
-// Hàm hiển thị danh sách Layout (Đã tối ưu chuẩn Form)
 function renderLayoutOptions() {
     const container = document.getElementById('layoutContainer');
     container.innerHTML = '';
@@ -180,7 +178,7 @@ function switchScreen(screenName) {
     screens[screenName].classList.add('active');
 }
 
-// --- BƯỚC 3: CHỤP SỰ KIỆN 6 TẤM ---
+// --- BƯỚC 3: CHỤP SỰ KIỆN 8 TẤM ---
 async function startCaptureSession() {
     switchScreen('capture');
     capturedPhotos = []; 
@@ -191,16 +189,29 @@ async function startCaptureSession() {
         cameraOverlay.classList.add('hidden');
     }
     
-    for (let i = 1; i <= 6; i++) {
-        progressEl.innerText = `${i}/6`;
+    for (let i = 1; i <= TOTAL_CAPTURES; i++) {
+        progressEl.innerText = `${i}/${TOTAL_CAPTURES}`;
         countdownEl.classList.remove('hidden');
         
-        if (currentLayout && currentLayout.overlayUrls && currentLayout.overlayUrls.length > 0) {
-            const randomIndex = Math.floor(Math.random() * currentLayout.overlayUrls.length);
-            cameraOverlay.src = currentLayout.overlayUrls[randomIndex];
+        // ================= CỐ ĐỊNH THỨ TỰ TUẦN TỰ 1 2 3 4 1 2 3 4 =================
+        if (currentLayout && currentLayout.overlayUrls && currentLayout.overlayUrls.length === 4) {
+            // Biến i chạy từ 1 đến 8. Công thức (i - 1) % 4 sẽ trả về tuần tự:
+            // Tấm 1: 0 % 4 = 0 (Tương ứng Pose 1)
+            // Tấm 2: 1 % 4 = 1 (Tương ứng Pose 2)
+            // Tấm 3: 2 % 4 = 2 (Tương ứng Pose 3)
+            // Tấm 4: 3 % 4 = 3 (Tương ứng Pose 4)
+            // Tấm 5: 4 % 4 = 0 (Lặp lại Pose 1)
+            // Tấm 6: 5 % 4 = 1 (Lặp lại Pose 2)...
+            const overlayIndex = (i - 1) % 4;
+            cameraOverlay.src = currentLayout.overlayUrls[overlayIndex];
+        } else if (currentLayout && currentLayout.overlayUrls && currentLayout.overlayUrls.length > 0) {
+            // Phương án dự phòng tổng quát nếu danh sách không phải là 4 ảnh
+            const overlayIndex = (i - 1) % currentLayout.overlayUrls.length;
+            cameraOverlay.src = currentLayout.overlayUrls[overlayIndex];
         }
+        // =========================================================================
         
-        for (let c = 3; c > 0; c--) {
+        for (let c = 5; c > 0; c--) {
             countdownEl.innerText = c;
             await delay(1000); 
         }
@@ -233,7 +244,6 @@ async function startCaptureSession() {
     buildSelectionGrid();
     switchScreen('selection');
 }
-
 // --- BƯỚC 4: LỰA CHỌN VÀ SẮP XẾP VÀO KHUNG (DRAG & DROP TÍCH HỢP) ---
 // --- BƯỚC 4: CẬP NHẬT GIAO DIỆN KHUNG THEO LAYOUT KHÁCH CHỌN ---
 function buildSelectionGrid() {
@@ -291,15 +301,30 @@ function buildSelectionGrid() {
             const contentH = displayH - padTop - padBottom;
 
                 // Gán chiều cao từng ô theo cấu hình layout
-                currentLayout.slots.forEach((cfg, i) => {
-                    const slotEl = document.getElementById(`strip-slot-${i}`);
-                    if (!slotEl) return;
-                    // Chiều rộng ô theo tỷ lệ w của layout
-                    slotEl.style.width = (cfg.w * 100) + '%';
-                    // Chiều cao ô theo tỷ lệ h của layout
-                    slotEl.style.height = (cfg.h * 100) + '%';
-                    slotEl.style.margin = '6px auto';
-                    slotEl.style.display = 'flex';
+                // 3. Dựng dải Strip với các Ô (Drop Targets) theo tỉ lệ trong layout
+currentLayout.slots.forEach((cfg, index) => {
+    const slotEl = document.createElement('div');
+    slotEl.className = 'strip-slot';
+    slotEl.innerText = "Ô ghép " + (index + 1);
+    slotEl.id = `strip-slot-${index}`;
+
+    // Giữ nguyên định vị tuyệt đối chuẩn xác theo tọa độ tâm của Layout
+    slotEl.style.position = 'absolute';
+    slotEl.style.left = (cfg.cx * 100) + '%';
+    slotEl.style.top = (cfg.cy * 100) + '%';
+    slotEl.style.width = (cfg.w * 100) + '%';
+    slotEl.style.height = (cfg.h * 100) + '%';
+    // Đảm bảo không có margin can thiệp làm lệch tâm
+    slotEl.style.margin = '0'; 
+    slotEl.style.transform = `translate(-50%, -50%) rotate(${cfg.angle || 0}deg)`;
+    slotEl.style.boxSizing = 'border-box';
+    
+    // Thêm các dòng này để chữ "Ô ghép" và ảnh chụp sau này được căn giữa hoàn hảo bên trong ô
+    slotEl.style.display = 'flex';
+    slotEl.style.alignItems = 'center';
+    slotEl.style.justifyContent = 'center';
+
+    // ... Giữ nguyên toàn bộ logic xử lý sự kiện dragover, dragleave, drop, onclick ở phía dưới ...
                 });
         };
     }
@@ -308,7 +333,7 @@ function buildSelectionGrid() {
     // Khởi tạo mảng gán vị trí ảnh
     slotAssignments = new Array(currentLayout.slots.length).fill(null);
 
-    // 1. Dựng danh sách 6 ảnh đã chụp vào 2 cột (Draggable Source)
+    // 1. Dựng danh sách 8 ảnh đã chụp vào 2 cột (Draggable Source)
     capturedPhotos.forEach((photoDataUrl, index) => {
         const item = document.createElement('div');
         item.className = 'pool-item';
@@ -346,7 +371,7 @@ function buildSelectionGrid() {
             updateStripVisuals();
         };
 
-        if (index < 3) poolLeft.appendChild(item);
+        if (index < 4) poolLeft.appendChild(item);
         else poolRight.appendChild(item);
     });
 
