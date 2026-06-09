@@ -379,7 +379,6 @@ currentLayout.slots.forEach((cfg, index) => {
     currentLayout.slots.forEach((cfg, index) => {
         const slotEl = document.createElement('div');
         slotEl.className = 'strip-slot';
-        slotEl.innerText = "Ô ghép " + (index + 1);
         slotEl.id = `strip-slot-${index}`;
 
         // Đặt vị trí và kích thước theo tỉ lệ trong `cfg` (sử dụng phần trăm)
@@ -436,7 +435,32 @@ currentLayout.slots.forEach((cfg, index) => {
         
         stripContainer.appendChild(slotEl);
     });
-}
+    // ================= THÊM MỚI TẠI ĐÂY: ĐÈ ẢNH KHUNG LÊN TRÊN CÙNG =================
+            if (currentLayout && currentLayout.frameUrl) {
+                const topFrame = document.createElement('img');
+                topFrame.src = currentLayout.frameUrl;
+                
+                // Ép khung phủ kín 100% diện tích hộp
+                topFrame.style.position = 'absolute';
+                topFrame.style.top = '0';
+                topFrame.style.left = '0';
+                topFrame.style.width = '100%';
+                topFrame.style.height = '100%';
+                
+                // Đẩy lên lớp trên cùng để che lấp các góc thừa của ảnh chụp
+                topFrame.style.zIndex = '10'; 
+                
+                // RẤT QUAN TRỌNG: Cho phép trỏ chuột "xuyên thấu" qua lớp ảnh này. 
+                // Nếu không có dòng này, lớp ảnh đè lên sẽ chặn đứng mọi thao tác kéo/thả của khách!
+                topFrame.style.pointerEvents = 'none'; 
+                
+                stripContainer.appendChild(topFrame);
+            }
+            // =================================================================================
+
+            // Kích hoạt đồng bộ hình ảnh lần đầu tiên ngay khi dựng xong DOM
+            updateStripVisuals();
+        };
 
 // Hàm cập nhật giao diện trực quan (Không đổi)
 function updateStripVisuals() {
