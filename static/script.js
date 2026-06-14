@@ -94,12 +94,14 @@ const LAYOUTS = [
 ];
 
 // --- BƯỚC 1: BẤM START -> MỞ CAMERA -> CHỌN LAYOUT ---
+// 1. Từ màn hình chào bấm Start -> Chỉ chuyển sang Hướng dẫn (Guide)
 if (btnStart) {
-    // Khi bấm nút bắt đầu từ màn welcome, chuyển hướng sang xem hướng dẫn (guide) trước
     btnStart.addEventListener('click', () => {
         switchScreen('guide');
     });
 }
+
+// Hàm global để xin quyền camera và kích hoạt màn hình chọn khung
 function startCameraSessionGlobal() {
     navigator.mediaDevices.getUserMedia({ video: true })
         .then(stream => {
@@ -113,23 +115,26 @@ function startCameraSessionGlobal() {
             alert("Vui lòng cấp quyền camera trên trình duyệt để tiếp tục!");
         });
 }
+
+// 2. Từ màn hình Hướng dẫn bấm Tiếp tục -> Mới bắt đầu mở Camera và chọn Layout
 if (btnFromGuideToLayout) {
     btnFromGuideToLayout.addEventListener('click', startCameraSessionGlobal);
 }
-if (btnFromGuideToLayout) {
-    btnFromGuideToLayout.addEventListener('click', startCameraSessionGlobal);
-}
-// THÊM MỚI ĐOẠN LỆNH NÀY: Xử lý quay lại bàn kéo thả ảnh chụp
+
+// 3. Xử lý nút bấm quay lại bàn sắp xếp ảnh chụp
 if (btnBackToSelection) {
     btnBackToSelection.addEventListener('click', () => {
         switchScreen('selection');
-        buildSelectionGrid(); // Rebuild lại lưới để bảo toàn các ô kéo thả hoạt động chính xác
+        buildSelectionGrid(); 
     });
 }
-btnStart.addEventListener('click', startCameraSessionGlobal);
+
+// 4. Nếu ở màn hình kết quả cuối cùng bấm Chụp lại mới
 if (btnRetake) {
     btnRetake.addEventListener('click', startCameraSessionGlobal);
 }
+
+// 5. Bấm nút bắt đầu chụp tại màn hình chọn layout
 if (btnStartCapture) {
     btnStartCapture.addEventListener('click', () => {
         if (!currentLayout) return;

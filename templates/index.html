@@ -22,8 +22,8 @@
                 Cậu đã sẵn sàng chưa nào?
             </p>
             <div class="actions">
-                <button id="btnStart" class="btn-cloud-start">
-                    <img src="{{ url_for('static', filename='image/backgroud-1/IMG_0218.png') }}" alt="Mây chụp bắt đầu">
+                <button id="btnStart" class="btn-cloud-start btn-cloud-welcome">
+                    <img src="{{ url_for('static', filename='image/nút mây.png') }}" alt="Mây chụp bắt đầu" >
                     <span class="btn-cloud-text">Bắt đầu thôi!</span>
                 </button>
             </div>
@@ -59,21 +59,21 @@
             </div>
 
             <div class="actions">
-                <button id="btnFromGuideToLayout" class="btn-cloud-start">
-                    <img src="{{ url_for('static', filename='image/backgroud-1/IMG_0218.png') }}" alt="Mây phiêu lưu">
+                <button id="btnFromGuideToLayout" class="btn-cloud-start btn-cloud-guide">
+                    <img src="{{ url_for('static', filename='image/nút mây.png') }}" alt="Mây phiêu lưu">
                     <span class="btn-cloud-text" style="font-size: 0.95rem;">Cùng phiêu lưu thôi</span>
                 </button>
             </div>
         </div>
         
         <div id="screen-layout" class="screen" style="margin-top: -3vh; position: relative; height: 75vh;">
-            <h2 class="screen-title" style="color: #ffffff; font-size: 2.2rem; font-weight: 800; text-shadow: 2px 4px 10px rgba(0, 0, 0, 0.25); margin-bottom: 8vh; text-transform: uppercase; letter-spacing: 2px;">CHỌN NHÂN VẬT CẬU YÊU THÍCH NHÉ!</h2>
+            <h2 class="screen-title" style="color: #ffffff; font-family: 'CCMM-Cute', sans-serif; font-size: 2.2rem; font-weight: 800; text-shadow: 2px 4px 10px rgba(0, 0, 0, 0.25); margin-bottom: 15vh; text-transform: uppercase; letter-spacing: 2px;">CHỌN NHÂN VẬT CẬU YÊU THÍCH NHÉ!</h2>
             
             <div id="layoutContainer" class="layout-grid"></div>
             
             <div class="actions" style="position: fixed; bottom: -8vh; left: 50%; transform: translateX(-50%); display: flex; justify-content: center; width: auto; margin-top: 0; z-index: 100;">
-                <button id="btnStartCapture" class="btn-cloud-start hidden">
-                    <img src="{{ url_for('static', filename='image/backgroud-1/IMG_0218.png') }}" alt="Mây chụp hình">
+                <button id="btnStartCapture" class="btn-cloud-start btn-cloud-StartCapture">
+                    <img src="{{ url_for('static', filename='image/nút mây.png') }}" alt="Mây chụp hình">
                     <span class="btn-cloud-text" style="font-size: 0.95rem; ">Cười thật tươi nhé</span>
                 </button>
             </div>
@@ -98,8 +98,8 @@
             </div>
 
             <div class="selection-actions-fixed">
-                <button id="btnConfirmSelection" class="btn-cloud-start" disabled>
-                    <img src="{{ url_for('static', filename='image/backgroud-1/IMG_0218.png') }}" alt="Mây in ảnh">
+                <button id="btnConfirmSelection" class="btn-cloud-start btn-cloud-selection" disabled>
+                    <img src="{{ url_for('static', filename='image/nút mây.png') }}" alt="Mây in ảnh">
                     <span class="btn-cloud-text" style="font-size: 0.95rem;">In ảnh</span>
                 </button>
             </div>
@@ -113,19 +113,19 @@
             
             <!-- ĐÃ CẬP NHẬT: Bộ 3 nút bấm hình đám mây đồng bộ thiết kế -->
             <div class="actions final-actions-container">
-                <button id="btnBackToSelection" class="btn-cloud-start">
-                    <img src="{{ url_for('static', filename='image/backgroud-1/IMG_0218.png') }}" alt="Mây quay lại">
-                    <span class="btn-cloud-text">Chọn lại ảnh</span>
+                <button id="btnBackToSelection" class="btn-cloud-start btn-cloud-Back">
+                    <img src="{{ url_for('static', filename='image/nút mây.png') }}" alt="Mây quay lại">
+                    <span class="btn-cloud-text">Quay lại</span>
                 </button>
                 
-                <button id="btnSave" class="btn-cloud-start">
-                    <img src="{{ url_for('static', filename='image/backgroud-1/IMG_0218.png') }}" alt="Mây tải về">
-                    <span class="btn-cloud-text">Tải ảnh về</span>
+                <button id="btnSave" class="btn-cloud-start btn-cloud-save">
+                    <img src="{{ url_for('static', filename='image/nút mây.png') }}" alt="Mây tải về">
+                    <span class="btn-cloud-text">Tải xuống</span>
                 </button>
                 
-                <button id="btnRetake" class="btn-cloud-start">
-                    <img src="{{ url_for('static', filename='image/backgroud-1/IMG_0218.png') }}" alt="Mây chụp lại">
-                    <span class="btn-cloud-text">Chụp lại mới</span>
+                <button id="btnRetake" class="btn-cloud-start btn-cloud-retake">
+                    <img src="{{ url_for('static', filename='image/nút mây.png') }}" alt="Mây chụp lại">
+                    <span class="btn-cloud-text">Chụp lại</span>
                 </button>
             </div>
         </div>
