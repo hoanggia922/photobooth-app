@@ -1,6 +1,7 @@
 // --- DOM ELEMENTS ---
 const screens = {
     welcome: document.getElementById('screen-welcome'),
+    guide: document.getElementById('screen-guide'),
     layout: document.getElementById('screen-layout'),
     capture: document.getElementById('screen-capture'),
     selection: document.getElementById('screen-selection'),
@@ -21,6 +22,8 @@ const btnConfirmSelection = document.getElementById('btnConfirmSelection');
 const btnRetake = document.getElementById('btnRetake');
 const btnStartCapture = document.getElementById('btnStartCapture');
 const btnStart = document.getElementById('btnStart');
+const btnFromGuideToLayout = document.getElementById('btnFromGuideToLayout');
+const btnBackToSelection = document.getElementById('btnBackToSelection'); // THÊM MỚI DÒNG NÀY
 
 // --- APP STATE ---
 let currentLayout = null; 
@@ -91,6 +94,12 @@ const LAYOUTS = [
 ];
 
 // --- BƯỚC 1: BẤM START -> MỞ CAMERA -> CHỌN LAYOUT ---
+if (btnStart) {
+    // Khi bấm nút bắt đầu từ màn welcome, chuyển hướng sang xem hướng dẫn (guide) trước
+    btnStart.addEventListener('click', () => {
+        switchScreen('guide');
+    });
+}
 function startCameraSessionGlobal() {
     navigator.mediaDevices.getUserMedia({ video: true })
         .then(stream => {
@@ -104,7 +113,19 @@ function startCameraSessionGlobal() {
             alert("Vui lòng cấp quyền camera trên trình duyệt để tiếp tục!");
         });
 }
-
+if (btnFromGuideToLayout) {
+    btnFromGuideToLayout.addEventListener('click', startCameraSessionGlobal);
+}
+if (btnFromGuideToLayout) {
+    btnFromGuideToLayout.addEventListener('click', startCameraSessionGlobal);
+}
+// THÊM MỚI ĐOẠN LỆNH NÀY: Xử lý quay lại bàn kéo thả ảnh chụp
+if (btnBackToSelection) {
+    btnBackToSelection.addEventListener('click', () => {
+        switchScreen('selection');
+        buildSelectionGrid(); // Rebuild lại lưới để bảo toàn các ô kéo thả hoạt động chính xác
+    });
+}
 btnStart.addEventListener('click', startCameraSessionGlobal);
 if (btnRetake) {
     btnRetake.addEventListener('click', startCameraSessionGlobal);
@@ -172,10 +193,29 @@ function renderLayoutOptions() {
 // Hàm switchScreen hỗ trợ ẩn/hiện mượt mà
 function switchScreen(screenName) {
     Object.values(screens).forEach(s => {
-        s.classList.remove('active');
-        s.classList.remove('hidden');
+        if (s) {
+            s.classList.remove('active');
+            s.classList.remove('hidden');
+        }
     });
-    screens[screenName].classList.add('active');
+    
+    if (screens[screenName]) {
+        screens[screenName].classList.add('active');
+    }
+    
+    // 1. Gán class nền cơ bản của màn hình
+    document.body.className = 'theme-' + screenName;
+    
+    // 2. ĐẶC BIỆT: Nếu tiến vào phòng chụp, tự động nhận diện ID layout để gán màu đơn sắc chuẩn chỉ
+    if (screenName === 'capture' && currentLayout) {
+        if (currentLayout.id === 'frame-strip-bear') {
+            document.body.classList.add('bg-bear');
+        } else if (currentLayout.id === 'frame-strip-boy') {
+            document.body.classList.add('bg-boy');
+        } else if (currentLayout.id === 'frame-strip-knight') {
+            document.body.classList.add('bg-knight');
+        }
+    }
 }
 
 // --- BƯỚC 3: CHỤP SỰ KIỆN 8 TẤM ---
@@ -279,7 +319,7 @@ function buildSelectionGrid() {
         previewFrameImg.onload = () => {
             // Quy tắc hiển thị giống .canvas-container: max-width:90vw, max-height:50vh
             const maxW = window.innerWidth * 0.9;
-            const maxH = window.innerHeight * 0.5;
+            const maxH = window.innerHeight * 0.62;
             const naturalW = previewFrameImg.width;
             const naturalH = previewFrameImg.height;
             const scale = Math.min(1, maxW / naturalW, maxH / naturalH);
