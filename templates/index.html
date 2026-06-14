@@ -6,61 +6,127 @@
     <title>Photobooth Professional</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="theme-welcome">
 
-    <div class="background-glow"></div>
     <div id="flash"></div>
 
-    <nav class="navbar">
-        <a href="{{ url_for('home') }}">home</a>
-        <a href="{{ url_for('privacy') }}">privacy policy</a>
-        <a href="{{ url_for('about') }}">about</a>
-    </nav>
     <main class="main-content">
         
         <div id="screen-welcome" class="screen active">
             <div class="title-group">
-                <span>NhaTrang</span>
-                <h1>photobooth</h1>
-                <span>2026</span>
+                <h1 class="typo-title">TYPO</h1>
             </div>
-            <p class="slogan">Hãy chụp theo cá tính của bạn!</p>
+            <p class="welcome-text">
+                Chào mừng cậu đến với Xứ sở nhiệm màu, nơi những điều kỳ diệu đang chờ được khám phá!<br>
+                Hãy cùng Henry và những người bạn cùng đồng hành trong chuyến phiêu đó.<br>
+                Cậu đã sẵn sàng chưa nào?
+            </p>
             <div class="actions">
-                <button class="btn-start" id="btnStart">
-                    <span>BẮT ĐẦU</span>
+                <button id="btnStart" class="btn-cloud-start">
+                    <img src="{{ url_for('static', filename='image/backgroud-1/IMG_0218.png') }}" alt="Mây chụp bắt đầu">
+                    <span class="btn-cloud-text">Bắt đầu thôi!</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="screen-guide" class="screen">
+            <h2 class="guide-title">BÍ KÍP THAM GIA CHUYẾN PHIÊU LƯU</h2>
+            
+            <div class="guide-workspace">
+                <div class="guide-column">
+                    <span class="guide-number">01</span>
+                    <div class="guide-card">
+                        <h3>CHỌN KHUNG XINH</h3>
+                        <p>Chọn khung ảnh cậu yêu thích để chụp cùng Henry, Martin và Malice ngay</p>
+                    </div>
+                </div>
+                
+                <div class="guide-column">
+                    <span class="guide-number">02</span>
+                    <div class="guide-card">
+                        <h3>CÙNG TẠO DÁNG</h3>
+                        <p>Đợi đồng hồ đếm ngược rồi cười thật tươi hoặc tạo dáng thật ngầu nhé!</p>
+                    </div>
+                </div>
+                
+                <div class="guide-column">
+                    <span class="guide-number">03</span>
+                    <div class="guide-card">
+                        <h3>CHIA SẺ NGAY</h3>
+                        <p>Tải ngay bức ảnh của riêng cậu và chia sẻ kỷ niệm tại Xử sổ nhiệm màu thôi nào!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button id="btnFromGuideToLayout" class="btn-cloud-start">
+                    <img src="{{ url_for('static', filename='image/backgroud-1/IMG_0218.png') }}" alt="Mây phiêu lưu">
+                    <span class="btn-cloud-text" style="font-size: 0.95rem;">Cùng phiêu lưu thôi</span>
                 </button>
             </div>
         </div>
         
-        <div id="screen-layout" class="screen">
-            <h2 class="screen-title">Chọn kiểu khung ảnh bạn thích</h2>
+        <div id="screen-layout" class="screen" style="margin-top: -3vh; position: relative; height: 75vh;">
+            <h2 class="screen-title" style="color: #ffffff; font-size: 2.2rem; font-weight: 800; text-shadow: 2px 4px 10px rgba(0, 0, 0, 0.25); margin-bottom: 8vh; text-transform: uppercase; letter-spacing: 2px;">CHỌN NHÂN VẬT CẬU YÊU THÍCH NHÉ!</h2>
+            
             <div id="layoutContainer" class="layout-grid"></div>
+            
+            <div class="actions" style="position: fixed; bottom: -8vh; left: 50%; transform: translateX(-50%); display: flex; justify-content: center; width: auto; margin-top: 0; z-index: 100;">
+                <button id="btnStartCapture" class="btn-cloud-start hidden">
+                    <img src="{{ url_for('static', filename='image/backgroud-1/IMG_0218.png') }}" alt="Mây chụp hình">
+                    <span class="btn-cloud-text" style="font-size: 0.95rem; ">Cười thật tươi nhé</span>
+                </button>
+            </div>
         </div>
-
+        
         <div id="screen-capture" class="screen">
             <div class="camera-box">
                 <video id="videoElement" autoplay playsinline></video>
+                <img id="cameraOverlay" class="camera-overlay hidden" src="" alt="Pose Overlay">
                 <div id="countdown" class="hidden">3</div>
             </div>
-            <p class="capture-status">Đang chụp kiểu số: <span id="captureProgress">1/6</span></p>
+            <p class="capture-status"><span id="captureProgress">1/8</span></p>
         </div>
 
         <div id="screen-selection" class="screen">
-            <h2 class="screen-title">Chọn đủ <span id="requiredCount">0</span> bức ảnh bạn ưng ý nhất</h2>
-            <div id="selectionContainer" class="selection-grid"></div>
-            <div class="actions">
-                <button class="btn-start" id="btnConfirmSelection" disabled>HOÀN THÀNH ✨</button>
+            <h2 class="selection-title">CÙNG NHÌN LẠI CHUYẾN PHIÊU LƯU VÀ LỰA CHỌN KHOẢNH KHẮC CẬU YÊU THÍCH NHẤT NHÉ!</h2>
+
+            <div class="selection-workspace">
+                <div class="photo-pool" id="photoPoolLeft"></div>
+                <div class="strip-preview-container" id="stripPreviewContainer"></div>
+                <div class="photo-pool" id="photoPoolRight"></div>
+            </div>
+
+            <div class="selection-actions-fixed">
+                <button id="btnConfirmSelection" class="btn-cloud-start" disabled>
+                    <img src="{{ url_for('static', filename='image/backgroud-1/IMG_0218.png') }}" alt="Mây in ảnh">
+                    <span class="btn-cloud-text" style="font-size: 0.95rem;">In ảnh</span>
+                </button>
             </div>
         </div>
 
         <div id="screen-final" class="screen">
-            <h2 class="screen-title">Tác phẩm của bạn!</h2>
+            <!-- ĐÃ LOẠI BỎ dòng chữ "Tác phẩm của bạn!" để nhường không gian cho ảnh to lên -->
             <div class="canvas-container">
                 <canvas id="canvasElement"></canvas>
             </div>
-            <div class="actions" style="margin-top: 20px;">
-                <button class="btn-start" id="btnSave">TẢI ẢNH VỀ ⬇️</button>
-                <button class="btn-start" id="btnRetake" style="background: #eee; color: #333; border-color: #ccc;">CHỤP LẠI 🔄</button>
+            
+            <!-- ĐÃ CẬP NHẬT: Bộ 3 nút bấm hình đám mây đồng bộ thiết kế -->
+            <div class="actions final-actions-container">
+                <button id="btnBackToSelection" class="btn-cloud-start">
+                    <img src="{{ url_for('static', filename='image/backgroud-1/IMG_0218.png') }}" alt="Mây quay lại">
+                    <span class="btn-cloud-text">Chọn lại ảnh</span>
+                </button>
+                
+                <button id="btnSave" class="btn-cloud-start">
+                    <img src="{{ url_for('static', filename='image/backgroud-1/IMG_0218.png') }}" alt="Mây tải về">
+                    <span class="btn-cloud-text">Tải ảnh về</span>
+                </button>
+                
+                <button id="btnRetake" class="btn-cloud-start">
+                    <img src="{{ url_for('static', filename='image/backgroud-1/IMG_0218.png') }}" alt="Mây chụp lại">
+                    <span class="btn-cloud-text">Chụp lại mới</span>
+                </button>
             </div>
         </div>
 

@@ -1,6 +1,7 @@
 // --- DOM ELEMENTS ---
 const screens = {
     welcome: document.getElementById('screen-welcome'),
+    guide: document.getElementById('screen-guide'),
     layout: document.getElementById('screen-layout'),
     capture: document.getElementById('screen-capture'),
     selection: document.getElementById('screen-selection'),
@@ -8,8 +9,10 @@ const screens = {
 };
 
 const video = document.getElementById('videoElement');
+const cameraOverlay = document.getElementById('cameraOverlay');
 const canvas = document.getElementById('canvasElement');
 const ctx = canvas.getContext('2d');
+const TOTAL_CAPTURES = 8;
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const countdownEl = document.getElementById('countdown');
 const flashEl = document.getElementById('flash');
@@ -17,19 +20,30 @@ const progressEl = document.getElementById('captureProgress');
 const selectionContainer = document.getElementById('selectionContainer');
 const btnConfirmSelection = document.getElementById('btnConfirmSelection');
 const btnRetake = document.getElementById('btnRetake');
+const btnStartCapture = document.getElementById('btnStartCapture');
 const btnStart = document.getElementById('btnStart');
+const btnFromGuideToLayout = document.getElementById('btnFromGuideToLayout');
+const btnBackToSelection = document.getElementById('btnBackToSelection'); // THÊM MỚI DÒNG NÀY
 
 // --- APP STATE ---
 let currentLayout = null; 
 let capturedPhotos = []; 
-let userSelectedIndices = []; 
+let slotAssignments = []; 
+let userSelectedIndices = [];
 
 const LAYOUTS = [
     {
         id: 'frame-strip-bear',
-        name: 'Khung Bé Gấu 5x16',
+        name: 'Malice',
         requiredPhotos: 4,
         frameUrl: '/static/congau.png', // Hoạt động hoàn hảo với PNG
+        overlayUrls: [
+            '/static/overlays/bear/PoseBear1.png',
+            '/static/overlays/bear/PoseBear2.png',
+            '/static/overlays/bear/PoseBear3.png',
+            '/static/overlays/bear/PoseBear4.png'
+        ],
+
         slots: [
             // Ô 1 (Trên cùng) - Đã được kéo lên đúng vị trí
             { cx: 0.5, cy: 0.1122, w: 0.9171, h: 0.1852, angle: 0 },
@@ -43,9 +57,15 @@ const LAYOUTS = [
     },
     {
         id: 'frame-strip-boy',
-        name: 'Khung Bé Trai 5x16',
+        name: 'Henry',
         requiredPhotos: 4,
         frameUrl: '/static/final.png',
+        overlayUrls: [
+            '/static/overlays/boy/PoseBoy1.png',
+            '/static/overlays/boy/PoseBoy2.png',
+            '/static/overlays/boy/PoseBoy3.png',
+            '/static/overlays/boy/PoseBoy4.png'
+        ],
         slots: [
             { cx: 0.5, cy: 0.1122, w: 0.9171, h: 0.1852, angle: 0 },
             { cx: 0.5, cy: 0.3183, w: 0.9154, h: 0.1857, angle: 0 },
@@ -55,9 +75,15 @@ const LAYOUTS = [
     },
     {
         id: 'frame-strip-knight',
-        name: 'Khung Hiệp Sĩ 5x16',
+        name: 'Martin',
         requiredPhotos: 4,
         frameUrl: '/static/hiepsi.png',
+        overlayUrls: [
+            '/static/overlays/knight/PoseKnight1.png',
+            '/static/overlays/knight/PoseKnight2.png',
+            '/static/overlays/knight/PoseKnight3.png',
+            '/static/overlays/knight/PoseKnight4.png'
+        ],
         slots: [
             { cx: 0.5, cy: 0.1122, w: 0.9171, h: 0.1852, angle: 0 },
             { cx: 0.5, cy: 0.3183, w: 0.9154, h: 0.1857, angle: 0 },
@@ -68,6 +94,12 @@ const LAYOUTS = [
 ];
 
 // --- BƯỚC 1: BẤM START -> MỞ CAMERA -> CHỌN LAYOUT ---
+if (btnStart) {
+    // Khi bấm nút bắt đầu từ màn welcome, chuyển hướng sang xem hướng dẫn (guide) trước
+    btnStart.addEventListener('click', () => {
+        switchScreen('guide');
+    });
+}
 function startCameraSessionGlobal() {
     navigator.mediaDevices.getUserMedia({ video: true })
         .then(stream => {
@@ -81,19 +113,35 @@ function startCameraSessionGlobal() {
             alert("Vui lòng cấp quyền camera trên trình duyệt để tiếp tục!");
         });
 }
-
+if (btnFromGuideToLayout) {
+    btnFromGuideToLayout.addEventListener('click', startCameraSessionGlobal);
+}
+if (btnFromGuideToLayout) {
+    btnFromGuideToLayout.addEventListener('click', startCameraSessionGlobal);
+}
+// THÊM MỚI ĐOẠN LỆNH NÀY: Xử lý quay lại bàn kéo thả ảnh chụp
+if (btnBackToSelection) {
+    btnBackToSelection.addEventListener('click', () => {
+        switchScreen('selection');
+        buildSelectionGrid(); // Rebuild lại lưới để bảo toàn các ô kéo thả hoạt động chính xác
+    });
+}
 btnStart.addEventListener('click', startCameraSessionGlobal);
 if (btnRetake) {
     btnRetake.addEventListener('click', startCameraSessionGlobal);
 }
+if (btnStartCapture) {
+    btnStartCapture.addEventListener('click', () => {
+        if (!currentLayout) return;
+        startCaptureSession();
+    });
+}
 
 // --- BƯỚC 2: CHỌN LAYOUT ---
-// Hàm hiển thị danh sách Layout (Không cần lọc ngang/dọc nữa)
-// Hàm hiển thị danh sách Layout (Đã thêm ảnh preview và sửa lỗi click)
-// Hàm hiển thị danh sách Layout (Đã tối ưu chuẩn Form)
 function renderLayoutOptions() {
     const container = document.getElementById('layoutContainer');
     container.innerHTML = '';
+    if (btnStartCapture) btnStartCapture.classList.add('hidden');
     
     LAYOUTS.forEach(layout => {
         const btn = document.createElement('button');
@@ -127,11 +175,16 @@ function renderLayoutOptions() {
         nameEl.className = 'layout-name-overlay';
         nameEl.innerText = layout.name;
         btn.appendChild(nameEl);
+        if (currentLayout && currentLayout.id === layout.id) {
+            btn.classList.add('active');
+            if (btnStartCapture) btnStartCapture.classList.remove('hidden');
+        }
 
-        btn.addEventListener('click', (e) => {
-            e.currentTarget.disabled = true;
+        btn.addEventListener('click', () => {
             currentLayout = layout;
-            startCaptureSession();
+            document.querySelectorAll('.layout-btn').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+            if (btnStartCapture) btnStartCapture.classList.remove('hidden');
         });
         
         container.appendChild(btn);
@@ -139,20 +192,66 @@ function renderLayoutOptions() {
 }
 // Hàm switchScreen hỗ trợ ẩn/hiện mượt mà
 function switchScreen(screenName) {
-    Object.values(screens).forEach(s => s.classList.remove('active'));
-    screens[screenName].classList.add('active');
+    Object.values(screens).forEach(s => {
+        if (s) {
+            s.classList.remove('active');
+            s.classList.remove('hidden');
+        }
+    });
+    
+    if (screens[screenName]) {
+        screens[screenName].classList.add('active');
+    }
+    
+    // 1. Gán class nền cơ bản của màn hình
+    document.body.className = 'theme-' + screenName;
+    
+    // 2. ĐẶC BIỆT: Nếu tiến vào phòng chụp, tự động nhận diện ID layout để gán màu đơn sắc chuẩn chỉ
+    if (screenName === 'capture' && currentLayout) {
+        if (currentLayout.id === 'frame-strip-bear') {
+            document.body.classList.add('bg-bear');
+        } else if (currentLayout.id === 'frame-strip-boy') {
+            document.body.classList.add('bg-boy');
+        } else if (currentLayout.id === 'frame-strip-knight') {
+            document.body.classList.add('bg-knight');
+        }
+    }
 }
 
-// --- BƯỚC 3: CHỤP SỰ KIỆN 6 TẤM ---
+// --- BƯỚC 3: CHỤP SỰ KIỆN 8 TẤM ---
 async function startCaptureSession() {
     switchScreen('capture');
     capturedPhotos = []; 
+
+    if (currentLayout && currentLayout.overlayUrls && currentLayout.overlayUrls.length > 0) {
+        cameraOverlay.classList.remove('hidden');
+    } else {
+        cameraOverlay.classList.add('hidden');
+    }
     
-    for (let i = 1; i <= 6; i++) {
-        progressEl.innerText = `${i}/6`;
+    for (let i = 1; i <= TOTAL_CAPTURES; i++) {
+        progressEl.innerText = `${i}/${TOTAL_CAPTURES}`;
         countdownEl.classList.remove('hidden');
         
-        for (let c = 3; c > 0; c--) {
+        // ================= CỐ ĐỊNH THỨ TỰ TUẦN TỰ 1 2 3 4 1 2 3 4 =================
+        if (currentLayout && currentLayout.overlayUrls && currentLayout.overlayUrls.length === 4) {
+            // Biến i chạy từ 1 đến 8. Công thức (i - 1) % 4 sẽ trả về tuần tự:
+            // Tấm 1: 0 % 4 = 0 (Tương ứng Pose 1)
+            // Tấm 2: 1 % 4 = 1 (Tương ứng Pose 2)
+            // Tấm 3: 2 % 4 = 2 (Tương ứng Pose 3)
+            // Tấm 4: 3 % 4 = 3 (Tương ứng Pose 4)
+            // Tấm 5: 4 % 4 = 0 (Lặp lại Pose 1)
+            // Tấm 6: 5 % 4 = 1 (Lặp lại Pose 2)...
+            const overlayIndex = (i - 1) % 4;
+            cameraOverlay.src = currentLayout.overlayUrls[overlayIndex];
+        } else if (currentLayout && currentLayout.overlayUrls && currentLayout.overlayUrls.length > 0) {
+            // Phương án dự phòng tổng quát nếu danh sách không phải là 4 ảnh
+            const overlayIndex = (i - 1) % currentLayout.overlayUrls.length;
+            cameraOverlay.src = currentLayout.overlayUrls[overlayIndex];
+        }
+        // =========================================================================
+        
+        for (let c = 5; c > 0; c--) {
             countdownEl.innerText = c;
             await delay(1000); 
         }
@@ -160,7 +259,7 @@ async function startCaptureSession() {
         countdownEl.classList.add('hidden');
         
         flashEl.classList.add('flash-active');
-setTimeout(() => flashEl.classList.remove('flash-active'), 150); // Đổi từ 50 thành 150
+        setTimeout(() => flashEl.classList.remove('flash-active'), 150);
 
         const tempCanvas = document.createElement('canvas');
         tempCanvas.width = video.videoWidth;
@@ -176,7 +275,8 @@ setTimeout(() => flashEl.classList.remove('flash-active'), 150); // Đổi từ 
         await delay(500); 
     }
 
-    // Tắt luồng camera sau khi chụp xong 6 tấm để bảo vệ tài nguyên
+    cameraOverlay.classList.add('hidden');
+
     if (video.srcObject) {
         video.srcObject.getTracks().forEach(track => track.stop());
     }
@@ -184,34 +284,249 @@ setTimeout(() => flashEl.classList.remove('flash-active'), 150); // Đổi từ 
     buildSelectionGrid();
     switchScreen('selection');
 }
-
-// --- BƯỚC 4: LỰA CHỌN GRID ---
+// --- BƯỚC 4: LỰA CHỌN VÀ SẮP XẾP VÀO KHUNG (DRAG & DROP TÍCH HỢP) ---
+// --- BƯỚC 4: CẬP NHẬT GIAO DIỆN KHUNG THEO LAYOUT KHÁCH CHỌN ---
 function buildSelectionGrid() {
-    userSelectedIndices = []; 
-    document.getElementById('requiredCount').innerText = currentLayout.requiredPhotos;
+    const requiredCountEl = document.getElementById('requiredCount');
+    if (requiredCountEl) {
+        requiredCountEl.innerText = currentLayout.requiredPhotos;
+    } else {
+        console.warn("Element 'requiredCount' not found in the DOM.");
+    }
     btnConfirmSelection.disabled = true;
-    selectionContainer.innerHTML = '';
+    
+    const poolLeft = document.getElementById('photoPoolLeft');
+    const poolRight = document.getElementById('photoPoolRight');
+    const stripContainer = document.getElementById('stripPreviewContainer');    
 
+    poolLeft.innerHTML = '';
+    poolRight.innerHTML = '';
+    stripContainer.innerHTML = '';
+
+    // ================= DÂN TRÍ ĐỔI KHUNG ĐỘNG TẠI ĐÂY =================
+    if (currentLayout && currentLayout.frameUrl) {
+        // Tự động lấy đường dẫn ảnh của Khung (congau.jpg, hiepsi.jpg,...) làm nền
+        stripContainer.style.backgroundImage = `url('${currentLayout.frameUrl}')`;
+        stripContainer.style.backgroundSize = '100% 100%'; // Ép hình nền vừa vặn khít khung
+        stripContainer.style.backgroundRepeat = 'no-repeat';
+        stripContainer.style.backgroundPosition = 'center';
+        stripContainer.style.backgroundColor = 'transparent'; // Loại bỏ màu xanh cứng mặc định
+    }
+    // Tải ảnh khung để tính kích thước hiển thị tương tự màn final
+    if (currentLayout && currentLayout.frameUrl) {
+        const previewFrameImg = new Image();
+        previewFrameImg.src = currentLayout.frameUrl;
+        previewFrameImg.onload = () => {
+            // Quy tắc hiển thị giống .canvas-container: max-width:90vw, max-height:50vh
+            const maxW = window.innerWidth * 0.9;
+            const maxH = window.innerHeight * 0.62;
+            const naturalW = previewFrameImg.width;
+            const naturalH = previewFrameImg.height;
+            const scale = Math.min(1, maxW / naturalW, maxH / naturalH);
+            const displayW = Math.round(naturalW * scale);
+            const displayH = Math.round(naturalH * scale);
+
+            // Gán kích thước cho container hiển thị khung ở màn chọn ảnh
+            stripContainer.style.width = displayW + 'px';
+            stripContainer.style.height = displayH + 'px';
+            stripContainer.style.backgroundSize = '100% 100%';
+
+            // Tính phần nội dung (không tính padding) để đặt chiều cao các ô theo tỷ lệ slot
+            const st = window.getComputedStyle(stripContainer);
+            const padTop = parseFloat(st.paddingTop) || 0;
+            const padBottom = parseFloat(st.paddingBottom) || 0;
+            const padLeft = parseFloat(st.paddingLeft) || 0;
+            const padRight = parseFloat(st.paddingRight) || 0;
+            const contentW = displayW - padLeft - padRight;
+            const contentH = displayH - padTop - padBottom;
+
+                // Gán chiều cao từng ô theo cấu hình layout
+                // 3. Dựng dải Strip với các Ô (Drop Targets) theo tỉ lệ trong layout
+currentLayout.slots.forEach((cfg, index) => {
+    const slotEl = document.createElement('div');
+    slotEl.className = 'strip-slot';
+    slotEl.innerText = "Ô ghép " + (index + 1);
+    slotEl.id = `strip-slot-${index}`;
+
+    // Giữ nguyên định vị tuyệt đối chuẩn xác theo tọa độ tâm của Layout
+    slotEl.style.position = 'absolute';
+    slotEl.style.left = (cfg.cx * 100) + '%';
+    slotEl.style.top = (cfg.cy * 100) + '%';
+    slotEl.style.width = (cfg.w * 100) + '%';
+    slotEl.style.height = (cfg.h * 100) + '%';
+    // Đảm bảo không có margin can thiệp làm lệch tâm
+    slotEl.style.margin = '0'; 
+    slotEl.style.transform = `translate(-50%, -50%) rotate(${cfg.angle || 0}deg)`;
+    slotEl.style.boxSizing = 'border-box';
+    
+    // Thêm các dòng này để chữ "Ô ghép" và ảnh chụp sau này được căn giữa hoàn hảo bên trong ô
+    slotEl.style.display = 'flex';
+    slotEl.style.alignItems = 'center';
+    slotEl.style.justifyContent = 'center';
+
+    // ... Giữ nguyên toàn bộ logic xử lý sự kiện dragover, dragleave, drop, onclick ở phía dưới ...
+                });
+        };
+    }
+    // =================================================================
+
+    // Khởi tạo mảng gán vị trí ảnh
+    slotAssignments = new Array(currentLayout.slots.length).fill(null);
+
+    // 1. Dựng danh sách 8 ảnh đã chụp vào 2 cột (Draggable Source)
     capturedPhotos.forEach((photoDataUrl, index) => {
         const item = document.createElement('div');
-        item.className = 'selection-item';
-        item.innerHTML = `<img src="${photoDataUrl}">`;
+        item.className = 'pool-item';
+        item.draggable = true; // Bật tính năng Kéo Thả HTML5
+        item.dataset.index = index;
         
+        const img = document.createElement('img');
+        img.src = photoDataUrl;
+        item.appendChild(img);
+        
+        // --- LOGIC KÉO THẢ (DRAG) ---
+        item.addEventListener('dragstart', (e) => {
+            item.classList.add('dragging');
+            // Đóng gói số thứ tự của bức ảnh để gửi đi
+            e.dataTransfer.setData('text/plain', index); 
+        });
+
+        item.addEventListener('dragend', () => {
+            item.classList.remove('dragging');
+        });
+
+        // --- LOGIC CLICK (Dự phòng cho Mobile) ---
         item.onclick = () => {
-            const isSelected = userSelectedIndices.includes(index);
-            if (isSelected) {
-                userSelectedIndices = userSelectedIndices.filter(i => i !== index);
+            const isAlreadySelected = slotAssignments.includes(index);
+            const firstEmptySlotIndex = slotAssignments.indexOf(null);
+
+            if (isAlreadySelected) {
+                const slotIndex = slotAssignments.indexOf(index);
+                slotAssignments[slotIndex] = null;
                 item.classList.remove('selected');
-            } else {
-                if (userSelectedIndices.length < currentLayout.requiredPhotos) {
-                    userSelectedIndices.push(index);
-                    item.classList.add('selected');
-                }
+            } else if (firstEmptySlotIndex !== -1) {
+                slotAssignments[firstEmptySlotIndex] = index;
+                item.classList.add('selected');
             }
-            btnConfirmSelection.disabled = userSelectedIndices.length !== currentLayout.requiredPhotos;
+            updateStripVisuals();
         };
-        selectionContainer.appendChild(item);
+
+        if (index < 4) poolLeft.appendChild(item);
+        else poolRight.appendChild(item);
     });
+
+    // 2. Dựng dải Strip với các Ô (Drop Targets) theo tỉ lệ trong layout
+    currentLayout.slots.forEach((cfg, index) => {
+        const slotEl = document.createElement('div');
+        slotEl.className = 'strip-slot';
+        slotEl.id = `strip-slot-${index}`;
+
+        // Đặt vị trí và kích thước theo tỉ lệ trong `cfg` (sử dụng phần trăm)
+        slotEl.style.position = 'absolute';
+        slotEl.style.left = (cfg.cx * 100) + '%';
+        slotEl.style.top = (cfg.cy * 100) + '%';
+        slotEl.style.width = (cfg.w * 100) + '%';
+        slotEl.style.height = (cfg.h * 100) + '%';
+        slotEl.style.transform = `translate(-50%,-50%) rotate(${cfg.angle || 0}deg)`;
+        slotEl.style.boxSizing = 'border-box';
+
+        // --- LOGIC THẢ (DROP) ---
+        // Cho phép vật thể bay lơ lửng bên trên (bắt buộc phải có để Drop hoạt động)
+        slotEl.addEventListener('dragover', (e) => {
+            e.preventDefault(); 
+            slotEl.classList.add('drag-over');
+        });
+
+        // Hủy hiệu ứng hover khi kéo chuột ra khỏi ô
+        slotEl.addEventListener('dragleave', () => {
+            slotEl.classList.remove('drag-over');
+        });
+
+        // Khi người dùng buông chuột thả ảnh vào ô
+        slotEl.addEventListener('drop', (e) => {
+            e.preventDefault();
+            slotEl.classList.remove('drag-over');
+            
+            // Giải nén dữ liệu: Lấy số thứ tự bức ảnh vừa được ném vào
+            const draggedPhotoIndex = parseInt(e.dataTransfer.getData('text/plain'));
+
+            if (!isNaN(draggedPhotoIndex)) {
+                // Nếu ảnh này đang nằm ở ô khác, phải tháo nó ra khỏi ô cũ trước
+                const oldSlotIndex = slotAssignments.indexOf(draggedPhotoIndex);
+                if (oldSlotIndex !== -1) {
+                    slotAssignments[oldSlotIndex] = null;
+                }
+                
+                // Gán ảnh vào ô mới này
+                slotAssignments[index] = draggedPhotoIndex;
+                updateStripVisuals();
+            }
+        });
+
+        // --- LOGIC CLICK VÀO Ô ĐỎ ĐỂ GỠ ẢNH ---
+        slotEl.onclick = () => {
+            const photoIndex = slotAssignments[index];
+            if (photoIndex !== null) {
+                slotAssignments[index] = null;
+                document.querySelectorAll('.pool-item')[photoIndex].classList.remove('selected');
+                updateStripVisuals();
+            }
+        };
+        
+        stripContainer.appendChild(slotEl);
+    });
+    // ================= THÊM MỚI TẠI ĐÂY: ĐÈ ẢNH KHUNG LÊN TRÊN CÙNG =================
+            if (currentLayout && currentLayout.frameUrl) {
+                const topFrame = document.createElement('img');
+                topFrame.src = currentLayout.frameUrl;
+                
+                // Ép khung phủ kín 100% diện tích hộp
+                topFrame.style.position = 'absolute';
+                topFrame.style.top = '0';
+                topFrame.style.left = '0';
+                topFrame.style.width = '100%';
+                topFrame.style.height = '100%';
+                
+                // Đẩy lên lớp trên cùng để che lấp các góc thừa của ảnh chụp
+                topFrame.style.zIndex = '10'; 
+                
+                // RẤT QUAN TRỌNG: Cho phép trỏ chuột "xuyên thấu" qua lớp ảnh này. 
+                // Nếu không có dòng này, lớp ảnh đè lên sẽ chặn đứng mọi thao tác kéo/thả của khách!
+                topFrame.style.pointerEvents = 'none'; 
+                
+                stripContainer.appendChild(topFrame);
+            }
+            // =================================================================================
+
+            // Kích hoạt đồng bộ hình ảnh lần đầu tiên ngay khi dựng xong DOM
+            updateStripVisuals();
+        };
+
+// Hàm cập nhật giao diện trực quan (Không đổi)
+function updateStripVisuals() {
+    // Dọn sạch class selected ở tất cả các ảnh trước
+    document.querySelectorAll('.pool-item').forEach(item => item.classList.remove('selected'));
+
+    slotAssignments.forEach((photoIndex, slotIndex) => {
+        const slotEl = document.getElementById(`strip-slot-${slotIndex}`);
+        
+        // Dọn dẹp ảnh cũ trong ô
+        const existingImg = slotEl.querySelector('img');
+        if (existingImg) existingImg.remove();
+
+        // Nếu ô đó đang được gán ảnh thì hiển thị lên
+        if (photoIndex !== null) {
+            const img = document.createElement('img');
+            img.src = capturedPhotos[photoIndex];
+            slotEl.appendChild(img);
+            
+            // Bôi mờ bức ảnh ở 2 cột để báo hiệu nó đã được dùng
+            document.querySelectorAll('.pool-item')[photoIndex].classList.add('selected');
+        }
+    });
+
+    // Nếu mảng không còn slot nào null (đã chọn đủ) -> Mở khóa nút Hoàn Thành
+    btnConfirmSelection.disabled = slotAssignments.includes(null);
 }
 
 function drawImageProp(ctx, img, x, y, w, h) {
@@ -229,6 +544,17 @@ function drawImageProp(ctx, img, x, y, w, h) {
 
 // --- BƯỚC 5: XỬ LÝ GHÉP FRAME VÀ HIỂN THỊ (DÀNH CHO KHUNG ĐƠN PNG) ---
 btnConfirmSelection.addEventListener('click', () => {
+    // 1. Kiểm tra xem đã điền đủ các ô chưa
+    const isFull = slotAssignments.every(slot => slot !== null);
+    if (!isFull) {
+        alert("Bạn hãy kéo thả ảnh vào đầy đủ các ô nhé!");
+        return;
+    }
+
+    // 2. Lưu lại danh sách chỉ mục ảnh đã chọn
+    userSelectedIndices = slotAssignments.slice();
+    
+    // 3. Chuyển màn hình
     switchScreen('final');
     
     const frameImg = new Image();
@@ -247,9 +573,9 @@ btnConfirmSelection.addEventListener('click', () => {
 
         let loadedCount = 0;
         
-        // Vẽ đúng 4 ảnh mà khách chọn
+        // Vẽ đúng ảnh mà khách đã gán vào từng slot
         currentLayout.slots.forEach((config, i) => {
-            let selectedPhotoIndex = userSelectedIndices[i];
+            let selectedPhotoIndex = slotAssignments[i];
             let photoImg = new Image();
             photoImg.src = capturedPhotos[selectedPhotoIndex];
             
@@ -268,7 +594,7 @@ btnConfirmSelection.addEventListener('click', () => {
                 
                 loadedCount++;
                 
-                // Khi vẽ xong 4 tấm ảnh, ụp cái khung PNG (nền trong suốt) lên trên cùng!
+                // Khi vẽ xong tất cả slot, ụp cái khung PNG (nền trong suốt) lên trên cùng!
                 if (loadedCount === currentLayout.slots.length) {
                     ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
                 }
