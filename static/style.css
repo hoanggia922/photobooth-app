@@ -40,13 +40,14 @@ body {
 
 /* Định dạng riêng cho đoạn text chào mừng dài ở Trang 1 */
 .welcome-text {
-    margin: 10px 0 30px 0;
-    font-size: 14px;
+    margin: 180px 0 20px 0;
+    font-size: 20px;
     color: #222;
-    line-height: 2;
+    line-height: 1;
     text-align: center;
-    max-width: 650px;
+    max-width: 1000px;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 .main-content {
@@ -66,6 +67,7 @@ body {
     align-items: center;
     justify-content: center;
     width: 100%;
+    height: 100%; /* ĐÃ SỬA: Đảm bảo các màn hình tự động khít với không gian main-content cấp cho */
     animation: fadeIn 0.4s ease-in-out;
 }
 
@@ -100,16 +102,14 @@ body {
     font-size: 10rem;
     font-weight: 500;
     letter-spacing: 9px;
-    font-style: italic;
-    text-transform: uppercase;
     text-shadow: 2px 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 /* ==================== CẤU HÌNH NÚT ĐÁM MÂY TỰ CHẾ ==================== */
 .btn-cloud-start {
     position: relative;
-    width: 200px;         /* Khống chế chiều rộng chuẩn của đám mây */
-    height: 100px;        /* Khống chế chiều cao chuẩn của đám mây */
+    width: 200px;         
+    height: 100px;        
     background: transparent;
     border: none;
     cursor: pointer;
@@ -125,14 +125,14 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: fill;     /* Đảm bảo ảnh đám mây căng lấp đầy khung */
+    object-fit: fill;     
     z-index: 1;
 }
 
 .btn-cloud-text {
     position: relative;
-    z-index: 2;           /* Đẩy chữ nổi lên trên bề mặt đám mây */
-    color: black;
+    z-index: 2;           
+    color: #3b98d1;
     font-family: 'CCMM-Cute', sans-serif;
     font-size: 1.1rem;
     font-weight: bold;
@@ -140,15 +140,15 @@ body {
 }
 
 .btn-cloud-start:hover {
-    transform: scale(1.05); /* Hiệu ứng phóng to nhẹ khi di chuột */
+    transform: scale(1.05); 
 }
 #btnStartCapture {
-    width: 190px; /* Bạn có thể tăng/giảm số px này (ví dụ: 180px, 230px...) để đạt độ to nhỏ vừa mắt */
+    width: 190px;
 }
 /* Màn hình Chào: Căn chỉnh khoảng cách vừa vặn dưới đoạn text chào */
 .btn-cloud-welcome {
-    margin-top: 50px;
-    margin-bottom: -50px;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 /* Màn hình Hướng dẫn: Đẩy nút dịch xuống dưới một chút cho thoáng bố cục */
@@ -160,50 +160,23 @@ body {
     margin-top: 35px;
     margin-bottom: 80px;
 }
-/* Màn hình Chọn ảnh (Selection): Sửa lỗi nút bị trượt khỏi màn hình chỉ thấy 1 phần */
-.selection-actions-fixed {
-    position: fixed;
-    bottom: 25px;         /* Cách đáy màn hình thiết bị 25px, không sợ bị lấp */
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    justify-content: center;
-    gap: 20px;            /* Khoảng cách giữa 3 đám mây */
-    width: 100%;
-    max-width: 800px;
-    z-index: 100;
+
+.btn-cloud-Back, .btn-cloud-save, .btn-cloud-retake {
+    color: black;
+    font-family: 'CCMM-Cute', sans-serif;
+    font-size: 1.6rem;
 }
 
-/* Tinh chỉnh riêng cho kích thước 3 đám mây ở màn chọn ảnh gọn gàng hơn */
+/* Tinh chỉnh riêng cho kích thước đám mây ở màn chọn ảnh gọn gàng hơn */
 .btn-cloud-selection {
-    margin-top: 100px;
-    margin-bottom: 100px;
+    margin-top: auto;
+    margin-bottom: 20px;
 }
 .btn-cloud-selection .btn-cloud-text {
-    font-size: 0.95rem;   /* Bóp nhỏ chữ một chút để không bị tràn khỏi mây */
-}
-/* Đẩy cụm 3 nút đám mây ở màn hình kết quả lên trên một chút */
-.final-actions-container {
-    margin-top: -30px;    /* Sử dụng margin âm để kéo ngược cụm nút lên phía trên */
-    margin-bottom: 40px;  /* Tạo khoảng cách an toàn với dòng chữ footer bên dưới */
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    width: 100%;
+    font-size: 0.95rem;   
 }
 
-/* Đồng thời tinh chỉnh nhẹ cho các nút mây ở màn hình này cân đối */
-.final-actions-container .btn-cloud-start {
-    transform: translateY(-15px); /* Tuyệt chiêu đẩy nhẹ vị trí thực tế của nút lên 15px */
-    transition: transform 0.2s ease;
-}
-
-/* Giữ hiệu ứng nảy nhẹ khi khách rê chuột vào nút mây */
-.final-actions-container .btn-cloud-start:hover {
-    transform: translateY(-20px) scale(1.05); /* Khi hover vừa nhấc lên thêm chút vừa phóng to */
-}
-
-/* ==================== MÀN HÌNH HƯỚNG DẪN CHẠY PHIÊU LƯU (MỚI THÊM) ==================== */
+/* ==================== MÀN HÌNH HƯỚNG DẪN CHẠY PHIÊU LƯU ==================== */
 .guide-title {
     color: #ffffff;
     font-family: 'CCMM-Cute', sans-serif;
@@ -242,7 +215,7 @@ body {
 }
 
 .guide-card {
-    background: rgba(54, 143, 222, 0.82); /* Màu xanh biển mờ khớp 100% ảnh mẫu */
+    background: rgba(54, 143, 222, 0.82); 
     border-radius: 24px;
     padding: 35px 22px;
     text-align: center;
@@ -327,32 +300,18 @@ body {
     transition: all 0.3s ease;
 }
 
-/* Màu đơn sắc cho Malice (gấu - congau.png) */
-body.theme-capture.bg-bear {
-    background-color: #ffe6df !important;
-    background-image: none !important; /* Triệt tiêu ảnh mây cũ để làm nổi nền đơn sắc */
-}
-
-/* Màu đơn sắc cho Henry (final.png) */
-body.theme-capture.bg-boy {
-    background-color: #ffe5cc !important;
-    background-image: none !important;
-}
-
-/* Màu đơn sắc cho Martin (hiệp sĩ - hiepsi.png) */
-body.theme-capture.bg-knight {
-    background-color: #caf5f8 !important;
-    background-image: none !important;
-}
+body.theme-capture.bg-bear { background-color: #ffe6df !important; background-image: none !important; }
+body.theme-capture.bg-boy { background-color: #ffe5cc !important; background-image: none !important; }
+body.theme-capture.bg-knight { background-color: #caf5f8 !important; background-image: none !important; }
 
 #videoElement { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
 .camera-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; z-index: 5; opacity: 1; transition: opacity 0.3s ease; }
 #countdown { position: absolute; font-size: 5rem; font-weight: bold; color: white; text-shadow: 0 4px 20px rgba(209, 107, 134, 0.8); z-index: 10; }
 .capture-status {
     margin-top: 15px;
-    font-size: 1.5rem; /* Tăng cỡ chữ to rõ ràng hơn */
-    font-weight: 700;    /* Làm đậm số lên */
-    color: #ffffff;      /* Đổi sang màu trắng (nếu dùng nền đơn sắc tối) hoặc giữ màu phù hợp */
+    font-size: 1.5rem; 
+    font-weight: 700;    
+    color: #ffffff;      
     letter-spacing: 1px;
 }
 
@@ -390,7 +349,7 @@ body.theme-capture.bg-knight {
     flex-direction: column; 
     align-items: center; 
     overflow: hidden; 
-    box-shadow: 0 4px 12 rgba(0,0,0,0.02); 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02); 
     transition: all 0.2s ease; 
     width: fit-content; 
     margin: 0 auto; 
@@ -418,65 +377,66 @@ body.theme-capture.bg-knight {
 .selection-item:hover { transform: scale(1.03); }
 .selection-item.selected { border-color: #d16b86; box-shadow: 0 4px 15px rgba(209, 107, 134, 0.4); }
 
-/* --- THÀNH PHẨM CANVAS --- */
-/* --- THÀNH PHẨM CANVAS (ĐÃ PHÓNG TO CHUẨN TỶ LỆ) --- */
+/* --- THÀNH PHẨM CANVAS (ĐÃ PHÓNG TO CHUẨN TỶ LỆ) --- */
 .canvas-container {
-    max-height: 80vh; /* ĐÃ TĂNG: Nâng từ 50vh lên 62vh giúp bức ảnh thành phẩm to rõ và hoành tráng hơn hẳn */
+    max-height: 80vh; 
     max-width: 90vw;
     box-shadow: 0 15px 45px rgba(0, 0, 0, 0.18);
     border-radius: 12px;
     overflow: hidden;
-    margin-top: -10vh; /* Tạo khoảng cách nhẹ với cạnh trên */
+    margin-top: 0; /* ĐÃ SỬA: Đổi từ -10vh về 0 để ảnh thành phẩm không kéo tuột lên trên */
 }
 #canvasElement { 
-    max-height: 75vh; /* Đồng bộ trần chiều cao với container bọc ngoài */
+    max-height: 70vh; /* Thu nhỏ trần canvas một chút để vừa khít vùng nhìn */
     width: auto; 
     max-width: 100%; 
     display: block; 
 }
 
-/* Định dạng ghim cố định bộ 3 nút đám mây nằm ngang sát đáy màn hình */
+/* Định dạng ghim cố định bộ 3 nút đám mây nằm ngang sát đáy màn hình kết quả */
 .final-actions-container {
     position: fixed;
-    bottom: -5vh;
+    bottom: 2vh; /* ĐÃ SỬA: Đổi từ -5vh thành số dương để mây hiển thị an toàn trên footer */
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 20px; /* Khoảng cách vừa vặn, thông thoáng giữa các đám mây */
+    gap: 20px; 
     justify-content: center;
     align-items: center;
     width: auto;
     margin-top: 0;
     z-index: 100;
 }
+.final-actions-container .btn-cloud-start {
+    transform: translateY(0); /* ĐÃ SỬA: Bỏ kéo âm để tránh nhảy lệch */
+    transition: transform 0.2s ease;
+}
+.final-actions-container .btn-cloud-start:hover {
+    transform: scale(1.05); 
+}
 
 #screen-final .btn-cloud-text {
-    font-size: 0.88rem; /* Điều chỉnh phông chữ vừa vặn ôm khít lòng đám mây nhỏ */
+    font-size: 0.88rem; 
 }
 .hidden { display: none !important; }
-footer { margin-bottom: 30px; text-align: center; font-size: 0.8rem; color: #666; }
-footer .heart-icon { color: #d16b86; }
+footer {
+    z-index:10;
+}
 
 @media (max-width: 600px) {
     .typo-title { font-size: 4rem; }
     .selection-grid { grid-template-columns: repeat(2, 1fr); }
+    .selection-workspace { flex-direction: row; flex-wrap: wrap; } 
+    .photo-pool { flex-direction: row; flex-wrap: wrap; max-width: 100%; justify-content: center; } 
+    .pool-item { width: 100px; }
 }
 
 /* --- LƯỚI CHỌN VÀ SẮP XẾP ẢNH --- */
-.selection-workspace { display: flex; gap: 30px; align-items: flex-start; justify-content: center; width: 100%; max-width: 800px; padding: 10px; }
-.photo-pool { display: flex; flex-direction: column; gap: 15px; flex: 1; max-width: 170px; }
-.pool-item { background: #7ca8d8; border: 3px solid transparent; border-radius: 8px; cursor: pointer; overflow: hidden; position: relative; aspect-ratio: 1.55; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: #333; }
-.pool-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.pool-item:hover { transform: scale(1.05); }
-.pool-item.selected { border-color: #d16b86; pointer-events: none; }
-
 .strip-preview-container { width: 170px; background: #7ca8d8; padding: 20px; border-radius: 10px; box-sizing: border-box; position: relative; display: flex; flex-direction: column; gap: 10px; margin-top: 30px; }
 .strip-preview-container::after { content: ""; position: absolute; inset: 6px; border-radius: 8px; pointer-events: none; z-index: 5; box-shadow: 0 6px 18px rgba(0,0,0,0.08) inset; }
 .strip-slot { background: transparent; aspect-ratio: 1.4; border-radius: 6px; cursor: pointer; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.85rem; font-weight: 700; border: 2px dashed rgba(255,255,255,0.6); transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease; z-index: 1; }
 .strip-slot:hover { border-color: rgba(255,255,255,0.95); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(209,107,134,0.18); }
 .strip-slot img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 2; }
-
-@media (max-width: 600px) { .selection-workspace { flex-direction: row; flex-wrap: wrap; } .photo-pool { flex-direction: row; flex-wrap: wrap; max-width: 100%; justify-content: center; } .pool-item { width: 100px; } }
 
 /* --- HIỆU ỨNG KÉO THẢ (DRAG & DROP) --- */
 .pool-item[draggable="true"] { cursor: grab; }
@@ -493,7 +453,6 @@ body.theme-welcome {
     background-repeat: no-repeat;
 }
 
-/* Đồng bộ cả màn hình hướng dẫn và màn hình chọn Layout sử dụng chung background 2 */
 body.theme-guide,
 body.theme-layout {
     background-image: url('image/backgroud-2/backgroud2.png') !important;
@@ -510,94 +469,76 @@ body.theme-final {
     background-position: center;
     background-repeat: no-repeat;
 }
-/* ==================== ĐỊNH DẠNG MÀN HÌNH CHỌN ẢNH CHUẨN LƯỚI CANVA ==================== */
 
+/* ==================== ĐỊNH DẠNG MÀN HÌNH CHỌN ẢNH CHUẨN LƯỚI CANVA ==================== */
 #screen-selection {
     position: relative;
-    height: 100vh;
+    height: 100%; /* ĐÃ SỬA: Đổi từ 100vh thành 100% để khít sát lòng main-content, hết lỗi đẩy chữ */
     justify-content: center;
 }
 
-/* Kiểu chữ tiêu đề màu nâu đậm đà, sắc nét trên nền mây ấm */
 .selection-title {
-    color: #4a2e1b;
+    color: #9a4d20;
     font-family: 'CCMM-Cute', sans-serif;
     font-size: 1.6rem;
     font-weight: 800;
     text-align: center;
     max-width: 750px;
-    margin-bottom: -1   vh;
+    margin-bottom: -1vh;
     letter-spacing: 1px;
     text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
 }
 
-/* Tuyệt chiêu căn giữa hồng tâm trục dọc cho 3 khối xếp hàng ngang */
 .selection-workspace {
     display: flex;
-    gap: 65px; /* Tạo khoảng trống rộng rãi sang hai bên giống ảnh mẫu */
-    align-items: center; /* Ép thanh strip và 2 cột ảnh bằng trục đối xứng dọc */
+    gap: 65px; 
+    align-items: center; 
     justify-content: center;
     width: 100%;
     max-width: 900px;
     padding: 10px;
-    margin-bottom: 8vh; /* Chừa không gian thoáng đãng cho nút đám mây hạ cánh */
-}
-.btn-cloud-Back {
-    color: black;
-    font-family: 'CCMM-Cute', sans-serif;
-    font-size: 1.6rem;
-}
-.btn-cloud-save {
-    color: black;
-    font-family: 'CCMM-Cute', sans-serif;
-    font-size: 1.6rem;
-}
-.btn-cloud-retake {
-    color: black;
-    font-family: 'CCMM-Cute', sans-serif;
-    font-size: 1.6rem;
+    margin-bottom: 8vh; 
 }
 
-/* Định dạng các ô chứa ảnh chụp dạng khung outline mảnh đen tinh tế */
 .photo-pool {
     display: flex;
     flex-direction: column;
     gap: 14px;
     flex: 1;
-    max-width: 130px; /* Giới hạn độ rộng thon gọn cho các ô vuông bên rìa */
+    max-width: 130px; 
 }
 
 .pool-item {
     background: rgba(255, 255, 255, 0.2);
-    border: 1.5px solid #000000; /* Viền outline đen mảnh chuẩn bài thiết kế */
-    border-radius: 4px; /* Bo góc nhẹ vuông vắn như bản vẽ Canva */
+    border: 1.5px solid #000000; 
+    border-radius: 4px; 
     cursor: pointer;
     overflow: hidden;
     position: relative;
-    aspect-ratio: 1.4; /* Tỷ lệ hiển thị hộp chữ nhật ngang thanh lịch */
+    aspect-ratio: 1.4; 
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
-
+.pool-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .pool-item:hover {
     transform: scale(1.05);
     border-color: #d16b86;
 }
 
-/* Trạng thái bôi mờ ảnh chụp ở 2 bên khi đã được chọn đưa vào khung strip */
 .pool-item.selected {
     border-color: #000000;
-    opacity: 0.3 !important; /* Làm mờ hẳn để khách dễ phân biệt ảnh nào chưa dùng */
+    opacity: 0.3 !important; 
     box-shadow: none;
+    pointer-events: none;
 }
 
-/* Định vị ghim cố định cho cụm hộp nút bấm ở đáy viewport */
+/* Ghim cụm hộp nút bấm ở đáy màn hình chọn ảnh */
 .selection-actions-fixed {
     position: fixed;
-    bottom: -12vh;
+    bottom: 2vh; /* ĐÃ SỬA: Đổi từ số âm -12vh thành số dương để nút mây ngoi lên trên chân trang */
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -606,12 +547,65 @@ body.theme-final {
     z-index: 100;
 }
 
-/* Xử lý trạng thái làm mờ nút đám mây khi chưa chọn đủ 4 tấm ảnh để kích hoạt in */
 .btn-cloud-start:disabled {
     opacity: 0.4;
     cursor: not-allowed;
     filter: grayscale(0.3);
 }
 #btnConfirmSelection{
-     width: 190px; /* Bạn có thể tăng/giảm số px này (ví dụ: 180px, 230px...) để đạt độ to nhỏ vừa mắt */
+     width: 190px; 
+}
+/* ==================== ĐỊNH DẠNG MÀN HÌNH CẢM ƠN FULL MAN HÌNH ==================== */
+#screen-thanks {
+    display: none;
+    position: fixed;           /* Ghim cố định phá vỡ giới hạn hộp 800px của main-content */
+    top: 0;
+    left: 0;
+    width: 100vw;              /* Ép chiều rộng tràn hết 100% màn hình thiết bị */
+    height: 100vh;             /* Ép chiều cao tràn hết 100% màn hình thiết bị */
+    
+    /* Đưa ảnh của cậu làm background thực thụ tại đây */
+    background-image: url('image/backgroud-4/backgroud-final.png') !important;
+    background-size: cover;    /* Giúp ảnh phủ kín toàn bộ màn hình, không bị móp méo */
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9;             /* Đảm bảo phủ đè lên trên tất cả các màn hình khác và cả footer */
+}
+
+#screen-thanks.active {
+    display: flex;             /* Khi được bật active lên thì kích hoạt định dạng căn giữa */
+}
+
+.thanks-box {
+    text-align: center;
+    padding: 20px;
+    z-index: 2;                /* Đảm bảo hộp chữ luôn luôn nổi lên trên bề mặt ảnh nền */
+}
+
+/* Các thuộc tính chữ xinh xắn của cậu được giữ nguyên vẹn */
+.thanks-title {
+    font-family: 'Quicksand-Modern', sans-serif;
+    font-size: 10rem;
+    color: white;
+    margin-bottom: 10px;
+    letter-spacing: 4px;
+    text-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+}
+
+.thanks-subtitle {
+    font-family: 'CCMM-Cute', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #ec7ead;
+    line-height: 1.6;
+    max-width: 700px;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6); /* Đổ bóng sáng giúp chữ cực kỳ rõ nét trên nền ảnh */
+    margin-top: 15px;
+    white-space: nowrap;
 }
