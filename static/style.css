@@ -40,7 +40,7 @@ body {
 
 /* Định dạng riêng cho đoạn text chào mừng dài ở Trang 1 */
 .welcome-text {
-    margin: 180px 0 20px 0;
+    margin: 450px 0 50px 0;
     font-size: 20px;
     color: #222;
     line-height: 1;
@@ -157,8 +157,7 @@ body {
     margin-bottom: 15px;
 }
 .btn-cloud-StartCapture{
-    margin-top: 35px;
-    margin-bottom: 80px;
+    margin: 10px 0 120px 0;
 }
 
 .btn-cloud-Back, .btn-cloud-save, .btn-cloud-retake {
@@ -325,11 +324,12 @@ body.theme-capture.bg-knight { background-color: #caf5f8 !important; background-
 .layout-grid { 
     display: grid; 
     grid-template-columns: repeat(3, minmax(0, 1fr)); 
+    margin: -50px 0 10px 0;
     gap: 35px; 
     width: 100%; 
     max-width: 800px; 
     padding: 10px 15px; 
-    max-height: 48vh; 
+    max-height: 50vh; 
     overflow-y: visible; 
     align-items: center;
 }
@@ -392,6 +392,14 @@ body.theme-capture.bg-knight { background-color: #caf5f8 !important; background-
     z-index: 1; 
     pointer-events: none; 
 }
+.layout-name-overlay { 
+    font-family: 'CCMM-Cute', sans-serif;
+    color:white;
+    font-weight: 600; 
+    text-align: center; 
+    font-size: 0.95rem; 
+    z-index: 3; }
+
 /* --- LƯỚI CHỌN ẢNH (SELECTION GRID) --- */
 .selection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 25px; max-width: 500px; padding: 10px 15px; max-height: 48vh; overflow-y: auto; width: 100%; }
 .selection-grid::-webkit-scrollbar { width: 6px; }
@@ -409,7 +417,7 @@ body.theme-capture.bg-knight { background-color: #caf5f8 !important; background-
     box-shadow: 0 15px 45px rgba(0, 0, 0, 0.18);
     border-radius: 12px;
     overflow: hidden;
-    margin-top: 0; /* ĐÃ SỬA: Đổi từ -10vh về 0 để ảnh thành phẩm không kéo tuột lên trên */
+    margin-top: -10vh; /* ĐÃ SỬA: Đổi từ -10vh về 0 để ảnh thành phẩm không kéo tuột lên trên */
 }
 #canvasElement { 
     max-height: 70vh; /* Thu nhỏ trần canvas một chút để vừa khít vùng nhìn */
@@ -421,7 +429,7 @@ body.theme-capture.bg-knight { background-color: #caf5f8 !important; background-
 /* Định dạng ghim cố định bộ 3 nút đám mây nằm ngang sát đáy màn hình kết quả */
 .final-actions-container {
     position: fixed;
-    bottom: 2vh; /* ĐÃ SỬA: Đổi từ -5vh thành số dương để mây hiển thị an toàn trên footer */
+    bottom: 6vh; /* ĐÃ SỬA: Đổi từ -5vh thành số dương để mây hiển thị an toàn trên footer */
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -489,7 +497,7 @@ body.theme-layout {
 body.theme-capture, 
 body.theme-selection, 
 body.theme-final {
-    background-image: url('image/backgroud-3/backgroud3.png') !important;
+    background-image: url('image/backgroud-3/background-3.png') !important;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -624,7 +632,7 @@ body.theme-final {
 
 .thanks-subtitle {
     font-family: 'CCMM-Cute', sans-serif;
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: 600;
     color: #ec7ead;
     line-height: 1.6;
@@ -637,7 +645,7 @@ body.theme-final {
 /* --- ĐỊNH DẠNG CHO ẢNH LOGO TYPO MỚI --- */
 .typo-logo-img {
     width: 100%;
-    max-width: 790px; /* Kích thước tối đa của logo ở trang đầu */
+    max-width: 590px; /* Kích thước tối đa của logo ở trang đầu */
     height: auto;
     margin: -200px 0 -400px 0;
     object-fit: contain;
@@ -646,5 +654,5 @@ body.theme-final {
 /* Kích thước riêng cho logo ở trang cảm ơn (to hơn một chút) */
 .thanks-logo-img {
     max-width: 500px; 
-    margin-bottom: 10px;
+    margin: -90px 0 40px 0;
 }

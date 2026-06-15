@@ -37,7 +37,7 @@ const LAYOUTS = [
         id: 'frame-strip-bear',
         name: 'Malice',
         requiredPhotos: 4,
-        frameUrl: '/static/congau.png', // Hoạt động hoàn hảo với PNG
+        frameUrl: '/static/gau.png', // Hoạt động hoàn hảo với PNG
         overlayUrls: [
             '/static/overlays/bear/PoseBear1.png',
             '/static/overlays/bear/PoseBear2.png',
@@ -60,7 +60,7 @@ const LAYOUTS = [
         id: 'frame-strip-boy',
         name: 'Henry',
         requiredPhotos: 4,
-        frameUrl: '/static/final.png',
+        frameUrl: '/static/main.png',
         overlayUrls: [
             '/static/overlays/boy/PoseBoy1.png',
             '/static/overlays/boy/PoseBoy2.png',
@@ -178,7 +178,7 @@ function renderLayoutOptions() {
         btn.appendChild(previewContainer);
 
         const nameEl = document.createElement('div');
-        nameEl.className = 'layout-name-overlay';
+        nameEl.className = `layout-name-overlay ${layout.id}`;
         nameEl.innerText = layout.name;
         btn.appendChild(nameEl);
         if (currentLayout && currentLayout.id === layout.id) {
