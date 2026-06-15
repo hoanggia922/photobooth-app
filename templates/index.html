@@ -18,7 +18,7 @@
             </div>
             <p class="welcome-text">
                 Chào mừng cậu đến với Xứ sở nhiệm màu, nơi những điều kỳ diệu đang chờ được khám phá!<br>
-                Hãy cùng Henry và những người bạn cùng đồng hành trong chuyến phiêu lưu đó.<br>
+                Hãy cùng Henry và những người bạn đồng hành trong chuyến phiêu lưu đó.<br>
                 Cậu đã sẵn sàng chưa nào?
             </p>
             <div class="actions">
@@ -53,7 +53,7 @@
                     <span class="guide-number">03</span>
                     <div class="guide-card">
                         <h3>CHIA SẺ NGAY</h3>
-                        <p>Tải ngay bức ảnh của riêng cậu và chia sẻ kỷ niệm tại Xử sổ nhiệm màu thôi nào!</p>
+                        <p>Tải ngay bức ảnh của riêng cậu và chia sẻ kỷ niệm tại Xứ sở nhiệm màu thôi nào!</p>
                     </div>
                 </div>
             </div>
@@ -100,36 +100,43 @@
             <div class="selection-actions-fixed">
                 <button id="btnConfirmSelection" class="btn-cloud-start btn-cloud-selection" disabled>
                     <img src="{{ url_for('static', filename='image/nút mây.png') }}" alt="Mây in ảnh">
-                    <span class="btn-cloud-text" style="font-size: 0.95rem;">In ảnh</span>
+                    <span class="btn-cloud-text" style="font-size: 0.95rem; color: #9a4d20;">In ảnh</span>
                 </button>
             </div>
         </div>
 
         <div id="screen-final" class="screen">
-            <!-- ĐÃ LOẠI BỎ dòng chữ "Tác phẩm của bạn!" để nhường không gian cho ảnh to lên -->
             <div class="canvas-container">
                 <canvas id="canvasElement"></canvas>
             </div>
             
-            <!-- ĐÃ CẬP NHẬT: Bộ 3 nút bấm hình đám mây đồng bộ thiết kế -->
             <div class="actions final-actions-container">
                 <button id="btnBackToSelection" class="btn-cloud-start btn-cloud-Back">
                     <img src="{{ url_for('static', filename='image/nút mây.png') }}" alt="Mây quay lại">
-                    <span class="btn-cloud-text">Quay lại</span>
+                    <span class="btn-cloud-text" style="color: #9a4d20;">Quay lại</span>
                 </button>
                 
                 <button id="btnSave" class="btn-cloud-start btn-cloud-save">
                     <img src="{{ url_for('static', filename='image/nút mây.png') }}" alt="Mây tải về">
-                    <span class="btn-cloud-text">Tải xuống</span>
+                    <span class="btn-cloud-text" style="color: #9a4d20;">Tải xuống</span>
                 </button>
                 
                 <button id="btnRetake" class="btn-cloud-start btn-cloud-retake">
                     <img src="{{ url_for('static', filename='image/nút mây.png') }}" alt="Mây chụp lại">
-                    <span class="btn-cloud-text">Chụp lại</span>
+                    <span class="btn-cloud-text" style="color: #9a4d20;">Chụp lại</span>
                 </button>
             </div>
         </div>
 
+        <div id="screen-thanks" class="screen">
+            <div class="thanks-box">
+                <h1 class="thanks-title">TYPO</h1>
+                <p class="thanks-subtitle">
+                    CẢM ƠN CẬU VÌ NHỮNG KỶ NIỆM THẬT TUYỆT VỜI TẠI XỨ SỞ NHIỆM MÀU!<br>
+                    HÃY TIẾP TỤC NHỮNG CHUYẾN PHIÊU LƯU KHÁC CÙNG NHAU NHÉ!
+                </p>
+            </div>
+        </div>
     </main>
 
     <footer>
