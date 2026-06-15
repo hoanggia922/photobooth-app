@@ -183,7 +183,7 @@ body {
     font-size: 2.2rem;
     font-weight: 800;
     letter-spacing: 2px;
-    margin-bottom: 45px;
+    margin-bottom: 80px;
     text-align: center;
     text-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
 }
@@ -195,7 +195,7 @@ body {
     align-items: flex-start;
     width: 100%;
     max-width: 900px;
-    margin-bottom: 40px;
+    margin-bottom: 100px;
     padding: 0 20px;
 }
 
@@ -208,6 +208,7 @@ body {
 
 .guide-number {
     font-size: 2rem;
+    font-family: 'CCMM-Cute', sans-serif;
     font-weight: 900;
     color: #ffffff;
     margin-bottom: 12px;
@@ -238,7 +239,7 @@ body {
     color: #ffffff;
     font-size: 1.15rem;
     font-weight: 700;
-    margin-bottom: 15px;
+    margin-bottom: 35px;
     letter-spacing: 1px;
 }
 
@@ -362,11 +363,35 @@ body.theme-capture.bg-knight { background-color: #caf5f8 !important; background-
     to { box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.35), 0 0 24px rgba(255, 255, 255, 0.45), 0 18px 36px rgba(209, 107, 134, 0.28); }
 }
 
-.layout-preview-strip { position: relative; width: fit-content; max-width: 125px; height: auto; display: flex; align-items: center; justify-content: center; background: transparent; border-radius: 12px; overflow: hidden; }
-.frame-img-preview { width: 100%; height: auto; max-height: 100%; max-width: 100%; object-fit: contain; display: block; position: relative; z-index: 2; }
-.slot-overlay-preview { position: absolute; background: rgba(0, 0, 0, 0.95); border-radius: 6px; z-index: 1; pointer-events: none; }
-.layout-name-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); color: white; padding: 18px 10px 10px; font-weight: 600; text-align: center; font-size: 0.95rem; z-index: 3; }
-
+.layout-preview-strip { 
+    position: relative; 
+    width: fit-content; 
+    max-width: 120px; 
+    height: auto; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    background: transparent; 
+    border-radius: 12px; 
+    overflow: hidden; 
+}
+.frame-img-preview { 
+    width: 100%; 
+    height: auto; 
+    max-height: 100%; 
+    max-width: 100%; 
+    object-fit: contain; 
+    display: block; 
+    position: relative; 
+    z-index: 2; 
+}
+.slot-overlay-preview { 
+    position: absolute; 
+    background: rgba(255, 255, 255, 0.95); 
+    border-radius: 6px; 
+    z-index: 1; 
+    pointer-events: none; 
+}
 /* --- LƯỚI CHỌN ẢNH (SELECTION GRID) --- */
 .selection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 25px; max-width: 500px; padding: 10px 15px; max-height: 48vh; overflow-y: auto; width: 100%; }
 .selection-grid::-webkit-scrollbar { width: 6px; }
@@ -447,7 +472,7 @@ footer {
 
 /* ==================== HỆ THỐNG ẢNH NỀN TOÀN MÀN HÌNH (RESKIN) ==================== */
 body.theme-welcome {
-    background-image: url('image/backgroud-1/backgroud-1.png') !important;
+    background-image: url('image/backgroud-1/background-1.png') !important;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -608,4 +633,18 @@ body.theme-final {
     text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6); /* Đổ bóng sáng giúp chữ cực kỳ rõ nét trên nền ảnh */
     margin-top: 15px;
     white-space: nowrap;
+}
+/* --- ĐỊNH DẠNG CHO ẢNH LOGO TYPO MỚI --- */
+.typo-logo-img {
+    width: 100%;
+    max-width: 790px; /* Kích thước tối đa của logo ở trang đầu */
+    height: auto;
+    margin: -200px 0 -400px 0;
+    object-fit: contain;
+    z-index: 2;
+}
+/* Kích thước riêng cho logo ở trang cảm ơn (to hơn một chút) */
+.thanks-logo-img {
+    max-width: 500px; 
+    margin-bottom: 10px;
 }
