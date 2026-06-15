@@ -5,7 +5,8 @@ const screens = {
     layout: document.getElementById('screen-layout'),
     capture: document.getElementById('screen-capture'),
     selection: document.getElementById('screen-selection'),
-    final: document.getElementById('screen-final')
+    final: document.getElementById('screen-final'),
+    thanks: document.getElementById('screen-thanks')
 };
 
 const video = document.getElementById('videoElement');
@@ -23,7 +24,7 @@ const btnRetake = document.getElementById('btnRetake');
 const btnStartCapture = document.getElementById('btnStartCapture');
 const btnStart = document.getElementById('btnStart');
 const btnFromGuideToLayout = document.getElementById('btnFromGuideToLayout');
-const btnBackToSelection = document.getElementById('btnBackToSelection'); // THÊM MỚI DÒNG NÀY
+const btnBackToSelection = document.getElementById('btnBackToSelection');
 
 // --- APP STATE ---
 let currentLayout = null; 
@@ -633,5 +634,9 @@ if (btnSave) {
         .then(response => response.json())
         .then(data => console.log("Đã lưu dự phòng tại server:", data.message))
         .catch(error => console.error('Lỗi lưu server:', error));
+        setTimeout(() => {
+            switchScreen('thanks');
+        }, 500); // Trì hoãn 0.5s để trình duyệt hoàn tất lệnh tải file xuống trước
+        // ===================================================
     });
 }
