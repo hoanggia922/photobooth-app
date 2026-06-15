@@ -42,10 +42,11 @@ body {
 .welcome-text {
     margin: 450px 0 50px 0;
     font-size: 20px;
-    color: #222;
-    line-height: 1;
+    color: white;
+    line-height: 2;
     text-align: center;
     max-width: 1000px;
+    letter-spacing: 1px;
     font-weight: 600;
     white-space: nowrap;
 }
@@ -194,8 +195,8 @@ body {
     align-items: flex-start;
     width: 100%;
     max-width: 900px;
-    margin-bottom: 100px;
-    padding: 0 20px;
+    margin: 40px 0 40px 0;
+    padding: 20px;
 }
 
 .guide-column {
@@ -307,12 +308,34 @@ body.theme-capture.bg-knight { background-color: #caf5f8 !important; background-
 #videoElement { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
 .camera-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; z-index: 5; opacity: 1; transition: opacity 0.3s ease; }
 #countdown { position: absolute; font-size: 5rem; font-weight: bold; color: white; text-shadow: 0 4px 20px rgba(209, 107, 134, 0.8); z-index: 10; }
-.capture-status {
-    margin-top: 15px;
-    font-size: 1.5rem; 
-    font-weight: 700;    
-    color: #ffffff;      
-    letter-spacing: 1px;
+.capture-status,
+#captureProgress {
+    position: static !important;   /* Đưa số trở về dòng chảy tự nhiên */
+    margin-top: 15px !important;   /* Tạo khoảng cách từ đáy khung chụp xuống số đếm */
+    text-align: center !important; /* Căn giữa */
+    
+    font-family: 'CCMM-Cute', sans-serif !important; 
+    font-size: 1.5rem !important;      
+    font-weight: normal !important;  /* ĐÃ SỬA: Đổi về normal để font CCMM không bị lỗi nét */
+    letter-spacing: 2px !important;
+    z-index: 10 !important;
+}
+/* Khi chụp với Cậu bé Henry (bg-boy) */
+body.bg-boy .capture-status {
+    color: #ff9630 !important; /* Màu xanh dương nam tính */
+    font-family: 'CCMM-Cute', sans-serif; 
+}
+
+/* Khi chụp với Gấu Malice (bg-bear) */
+body.bg-bear .capture-status {
+    color: #dc502b !important; /* Màu hồng dễ thương */
+    font-family: 'CCMM-Cute', sans-serif; 
+}
+
+/* Khi chụp với Hiệp sĩ Martin (bg-knight) */
+body.bg-knight .capture-status {
+    color: #698999 !important; /* Màu vàng hoàng gia */
+    font-family: 'CCMM-Cute', sans-serif; 
 }
 
 /* --- HIỆU ỨNG FLASH MÀN HÌNH --- */
@@ -397,7 +420,7 @@ body.theme-capture.bg-knight { background-color: #caf5f8 !important; background-
     color:white;
     font-weight: 600; 
     text-align: center; 
-    font-size: 0.95rem; 
+    font-size: 2rem; 
     z-index: 3; }
 
 /* --- LƯỚI CHỌN ẢNH (SELECTION GRID) --- */
@@ -645,9 +668,9 @@ body.theme-final {
 /* --- ĐỊNH DẠNG CHO ẢNH LOGO TYPO MỚI --- */
 .typo-logo-img {
     width: 100%;
-    max-width: 590px; /* Kích thước tối đa của logo ở trang đầu */
+    max-width: 570px; /* Kích thước tối đa của logo ở trang đầu */
     height: auto;
-    margin: -200px 0 -400px 0;
+    margin: -100px 0 -400px 0;
     object-fit: contain;
     z-index: 2;
 }
@@ -655,4 +678,41 @@ body.theme-final {
 .thanks-logo-img {
     max-width: 500px; 
     margin: -90px 0 40px 0;
+}
+.layout-btn {
+    overflow: visible !important; 
+}
+
+/* 2. Cấp quyền "bay lượn tự do" (Absolute) cho toàn bộ thẻ tên */
+.layout-name-overlay {
+    position: absolute !important; 
+    width: max-content !important; /* Đảm bảo tên dài không bị rớt dòng chữ */
+    margin-top: 0 !important;      /* Xóa lề thừa cũ */
+    background: transparent !important;
+}
+
+/* 3. BÂY GIỜ CẬU CÓ THỂ CHỈNH VỊ TRÍ TÙY Ý CHO TỪNG NHÂN VẬT 
+   Dùng các lệnh: top, bottom, left, right (có thể dùng số âm) 
+*/
+
+/* Cho Malice (Gấu) */
+.frame-strip-bear {
+    bottom: -42px !important;  /* Đẩy xuống dưới cùng cách đáy hộp 40px */
+    left: 50% !important;
+    transform: translateX(-50%) !important; /* 2 lệnh này giúp căn giữa tâm */
+}
+
+/* Cho Henry (Cậu bé) */
+.frame-strip-boy {
+    bottom: -42px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    /* Henry đã có sẵn màu vàng và in đậm ở trên, nó sẽ tự động giữ nguyên! */
+}
+
+/* Cho Martin (Hiệp sĩ) */
+.frame-strip-knight {
+    bottom: -42px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
 }
